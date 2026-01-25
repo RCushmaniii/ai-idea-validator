@@ -71,7 +71,7 @@ export function QuestionCard() {
     <div className="flex min-h-[70vh] flex-col">
       {/* Progress bar */}
       <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl">
+        <div className="mx-auto w-[640px] max-w-full">
           <div className="mb-2 flex items-center justify-between text-sm">
             <span className="text-neutral-600 dark:text-neutral-400">
               {t.killTest.progress
@@ -93,8 +93,8 @@ export function QuestionCard() {
 
       {/* Question content */}
       <div className="mx-auto flex max-w-7xl flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
-        <div className="w-full max-w-2xl">
-          <div className="min-h-[480px] w-full rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10">
+        <div className="w-[640px] max-w-full">
+          <div className="min-h-[480px] rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10">
             {/* Section subtitle */}
             <p className="mb-2 text-sm font-medium text-orange-600 dark:text-orange-500">
               {sectionT.subtitle}
