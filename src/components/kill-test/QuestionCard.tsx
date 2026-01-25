@@ -94,7 +94,7 @@ export function QuestionCard() {
       {/* Question content */}
       <div className="mx-auto flex max-w-7xl flex-1 items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
         <div className="w-full max-w-3xl">
-          <div className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10">
+          <div className="min-h-[420px] rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10">
             {/* Section subtitle */}
             <p className="mb-2 text-sm font-medium text-orange-600 dark:text-orange-500">
               {sectionT.subtitle}
@@ -238,7 +238,7 @@ export function QuestionCard() {
                     const descriptions = questionT.descriptions as Record<string, string>;
                     const verdictColors: Record<string, string> = {
                       kill: 'border-red-500 bg-red-50 dark:border-red-600 dark:bg-red-950/30',
-                      pivot: 'border-yellow-500 bg-yellow-50 dark:border-yellow-600 dark:bg-yellow-950/30',
+                      flip: 'border-yellow-500 bg-yellow-50 dark:border-yellow-600 dark:bg-yellow-950/30',
                       build: 'border-green-500 bg-green-50 dark:border-green-600 dark:bg-green-950/30',
                       bet: 'border-orange-500 bg-orange-50 dark:border-orange-600 dark:bg-orange-950/30',
                     };

@@ -4,8 +4,8 @@
   "private": true,
   "description": "A brutally honest defensibility assessment for founders. Run the AI Idea Validator to find out if your business idea can survive.",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "dev:webpack": "next dev",
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
@@ -14,18 +14,19 @@
     "ci": "npm run lint && npm run typecheck && npm run build"
   },
   "dependencies": {
-    "next": "16.1.4",
+    "next": "^15.5.9",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.3",
     "@netlify/plugin-nextjs": "^5.15.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "16.1.4",
+    "eslint-config-next": "^15.5.9",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
