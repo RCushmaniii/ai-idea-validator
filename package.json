@@ -4,7 +4,8 @@
   "private": true,
   "description": "A brutally honest defensibility assessment for founders. Run the AI Idea Validator to find out if your business idea can survive.",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
+    "dev:webpack": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
