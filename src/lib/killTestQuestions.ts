@@ -550,46 +550,42 @@ Pregunta:
       },
     ],
   },
-  // SECTION 3 — VERDICT (2 steps)
+  // SECTION 3 — FINAL REFLECTION (1 step - AI generates the verdict)
   {
-    id: 'verdict',
+    id: 'reflection',
     questions: [
-      {
-        id: 'finalVerdict',
-        type: 'verdict',
-        options: ['kill', 'flip', 'build', 'bet'],
-        required: true,
-        helper: {
-          en: {
-            title: 'What each verdict means',
-            content: `• **KILL** — Fundamentally weak. Too many structural problems. Move on.
-
-• **FLIP** — Has potential but needs a significant pivot. Rethink the positioning or model.
-
-• **BUILD** — Defensible with discipline. Execute carefully and focus on moats.
-
-• **BET** — Risky but asymmetric upside. The potential reward justifies the gamble.
-
-Be honest. Killing an idea early is success, not failure.`,
-          },
-          es: {
-            title: 'Qué significa cada veredicto',
-            content: `• **KILL** — Fundamentalmente débil. Demasiados problemas estructurales. Sigue adelante.
-
-• **FLIP** — Tiene potencial pero necesita un pivote significativo. Repiensa el posicionamiento.
-
-• **BUILD** — Defendible con disciplina. Ejecuta cuidadosamente y enfócate en fosos.
-
-• **BET** — Riesgoso pero con potencial asimétrico. La recompensa justifica la apuesta.
-
-Sé honesto. Matar una idea temprano es éxito, no fracaso.`,
-          },
-        },
-      },
       {
         id: 'biggestUnresolvedRisk',
         type: 'textarea',
         required: true,
+        helper: {
+          en: {
+            title: 'Be honest with yourself',
+            content: `This is your chance to name the elephant in the room.
+
+What's the one thing that could kill this idea that you haven't fully addressed?
+
+• A platform dependency you're hoping won't matter?
+• A competitor advantage you're downplaying?
+• A scaling problem you're ignoring?
+• A market reality you're avoiding?
+
+The AI will analyze all your responses and generate a verdict. This final reflection helps ensure nothing is overlooked.`,
+          },
+          es: {
+            title: 'Sé honesto contigo mismo',
+            content: `Esta es tu oportunidad de nombrar el elefante en la habitación.
+
+¿Cuál es la cosa que podría matar esta idea que no has abordado completamente?
+
+• ¿Una dependencia de plataforma que esperas no importe?
+• ¿Una ventaja competitiva que estás minimizando?
+• ¿Un problema de escala que estás ignorando?
+• ¿Una realidad del mercado que estás evitando?
+
+La IA analizará todas tus respuestas y generará un veredicto. Esta reflexión final ayuda a asegurar que nada se pase por alto.`,
+          },
+        },
       },
     ],
   },

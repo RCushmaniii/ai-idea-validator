@@ -190,9 +190,9 @@ export const translations = {
           title: 'Quick Scores',
           subtitle: 'Instinctive assessment',
         },
-        verdict: {
-          title: 'Verdict',
-          subtitle: 'The moment of truth',
+        reflection: {
+          title: 'Final Reflection',
+          subtitle: 'One last thing',
         },
       },
       questions: {
@@ -310,25 +310,11 @@ export const translations = {
           scaleMax: 'Premium OK',
         },
 
-        // Verdict questions
-        finalVerdict: {
-          label: 'Based on everything above, what is your verdict?',
-          options: {
-            kill: 'KILL',
-            flip: 'FLIP',
-            build: 'BUILD',
-            bet: 'BET',
-          },
-          descriptions: {
-            kill: 'Fundamentally weak—move on',
-            flip: 'Pivot required to survive',
-            build: 'Defensible with discipline',
-            bet: 'Risky but asymmetric upside',
-          },
-        },
+        // Final reflection question (AI generates verdict)
         biggestUnresolvedRisk: {
-          label: 'What is the single biggest unresolved risk?',
-          placeholder: 'The one thing that keeps you up at night...',
+          label: 'What is the single biggest unresolved risk or concern you have about this idea?',
+          subLabel: 'Be brutally honest. The AI will factor this into its analysis.',
+          placeholder: 'The elephant in the room that keeps you up at night...',
         },
       },
       helper: {
@@ -368,6 +354,24 @@ export const translations = {
         platformRisk: 'Platform Risk',
         lockInStrength: 'Lock-in Strength',
         pricingPower: 'Pricing Power',
+        yourScore: 'Your Score',
+        aiScore: 'AI Score',
+      },
+      aiAnalysis: {
+        title: 'AI Analysis',
+        confidence: 'Confidence',
+        rationale: 'Rationale',
+        contradictions: 'Contradictions Detected',
+        noContradictions: 'Your self-assessment appears consistent with your written responses.',
+        adjustedScores: 'AI-Adjusted Scores',
+        analyzing: 'Analyzing your responses...',
+        error: 'Analysis failed. Showing basic assessment.',
+        fieldLabels: {
+          copycatRisk: 'Copycat Risk',
+          platformRisk: 'Platform Risk',
+          lockInStrength: 'Lock-in Strength',
+          pricingPower: 'Pricing Power',
+        },
       },
       biggestRisk: 'Biggest Unresolved Risk',
       ideaSummary: 'Idea',
@@ -574,9 +578,9 @@ export const translations = {
           title: 'Puntuaciones Rapidas',
           subtitle: 'Evaluacion instintiva',
         },
-        verdict: {
-          title: 'Veredicto',
-          subtitle: 'El momento de la verdad',
+        reflection: {
+          title: 'Reflexion Final',
+          subtitle: 'Una ultima cosa',
         },
       },
       questions: {
@@ -694,25 +698,11 @@ export const translations = {
           scaleMax: 'Premium OK',
         },
 
-        // Verdict questions
-        finalVerdict: {
-          label: 'Con base en todo lo anterior, ¿cual es tu veredicto?',
-          options: {
-            kill: 'KILL',
-            flip: 'FLIP',
-            build: 'BUILD',
-            bet: 'BET',
-          },
-          descriptions: {
-            kill: 'Fundamentalmente debil—sigue adelante',
-            flip: 'Pivote requerido para sobrevivir',
-            build: 'Defendible con disciplina',
-            bet: 'Riesgoso pero con potencial asimetrico',
-          },
-        },
+        // Final reflection question (AI generates verdict)
         biggestUnresolvedRisk: {
-          label: '¿Cual es el mayor riesgo no resuelto?',
-          placeholder: 'Lo que te quita el sueno...',
+          label: '¿Cual es el mayor riesgo o preocupacion no resuelta que tienes sobre esta idea?',
+          subLabel: 'Se brutalmente honesto. La IA considerara esto en su analisis.',
+          placeholder: 'El elefante en la habitacion que te quita el sueno...',
         },
       },
       helper: {
@@ -752,6 +742,24 @@ export const translations = {
         platformRisk: 'Riesgo de Plataforma',
         lockInStrength: 'Fuerza de Lock-in',
         pricingPower: 'Poder de Precios',
+        yourScore: 'Tu Puntuacion',
+        aiScore: 'Puntuacion IA',
+      },
+      aiAnalysis: {
+        title: 'Analisis de IA',
+        confidence: 'Confianza',
+        rationale: 'Razonamiento',
+        contradictions: 'Contradicciones Detectadas',
+        noContradictions: 'Tu autoevaluacion parece consistente con tus respuestas escritas.',
+        adjustedScores: 'Puntuaciones Ajustadas por IA',
+        analyzing: 'Analizando tus respuestas...',
+        error: 'El analisis fallo. Mostrando evaluacion basica.',
+        fieldLabels: {
+          copycatRisk: 'Riesgo de Copia',
+          platformRisk: 'Riesgo de Plataforma',
+          lockInStrength: 'Fuerza de Lock-in',
+          pricingPower: 'Poder de Precios',
+        },
       },
       biggestRisk: 'Mayor Riesgo No Resuelto',
       ideaSummary: 'Idea',

@@ -2,11 +2,12 @@
   "_schema_documentation": {
     "description": "AI Idea Validator - Structured input schema for defensibility assessment",
     "scoring_scale": "All numeric scores use a 1-10 scale where 1=lowest risk/strength and 10=highest",
-    "enum_fields": "Fields showing 'option1 | option2' are enums - choose exactly one value"
+    "enum_fields": "Fields showing 'option1 | option2' are enums - choose exactly one value",
+    "note": "AI generates the final verdict based on your responses. Be brutally honest."
   },
 
   "meta": {
-    "schema_version": "1.2",
+    "schema_version": "2.0",
     "language": "en",
     "created_with": "human",
     "confidence_level": "medium"
@@ -85,12 +86,11 @@
   },
 
   "scoring": {
-    "_note": "All scores use 1-10 scale. Higher = greater risk or strength depending on field.",
+    "_note": "All scores use 1-10 scale. Higher = greater risk or strength depending on field. AI will compare these against your written responses.",
     "copycat_risk": null,
     "platform_risk": null,
     "lock_in_strength": null,
-    "pricing_power": null,
-    "overall_confidence": null
+    "pricing_power": null
   },
 
   "assumptions": {
@@ -102,12 +102,7 @@
   "self_reflection": {
     "emotional_attachment_level": 1,
     "would_i_fund_this_if_not_my_idea": "yes | no | unsure",
-    "biggest_blind_spot": ""
-  },
-
-  "initial_verdict": {
-    "founder_verdict": "KILL | FLIP | BUILD | BET",
-    "reasoning": "",
-    "what_would_change_my_mind": ""
+    "biggest_blind_spot": "",
+    "biggest_unresolved_risk": ""
   }
 }

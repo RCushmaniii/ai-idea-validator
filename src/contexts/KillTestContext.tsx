@@ -21,6 +21,24 @@ export interface PivotSuggestion {
   suggestion: string;
 }
 
+export interface Contradiction {
+  field: string;
+  userScore: number;
+  issue: string;
+}
+
+export interface AIAnalysis {
+  confidence: number;
+  rationale: string;
+  contradictions: Contradiction[];
+  adjustedScores: {
+    copycatRisk: number;
+    platformRisk: number;
+    lockInStrength: number;
+    pricingPower: number;
+  };
+}
+
 export interface TestResult {
   verdict: Verdict;
   weakSignals: WeakSignal[];
@@ -32,6 +50,7 @@ export interface TestResult {
     lockInStrength: number;
     pricingPower: number;
   };
+  aiAnalysis?: AIAnalysis;
 }
 
 interface KillTestContextType {
@@ -39,6 +58,7 @@ interface KillTestContextType {
   answers: TestAnswers;
   isStarted: boolean;
   isCompleted: boolean;
+  isAnalyzing: boolean;
   result: TestResult | null;
   totalQuestions: number;
   startTest: () => void;
@@ -54,7 +74,7 @@ interface KillTestContextType {
 
 const KillTestContext = createContext<KillTestContextType | undefined>(undefined);
 
-function calculateVerdict(answers: TestAnswers): TestResult {
+function calculateOfflineVerdict(answers: TestAnswers): TestResult {
   // Get scores from the scoring section
   const copycatRisk = Number(answers.copycatRiskScore) || 5;
   const platformRisk = Number(answers.platformRiskScore) || 5;
@@ -65,7 +85,6 @@ function calculateVerdict(answers: TestAnswers): TestResult {
   const copycatVelocity = answers.copycatVelocity as string;
   const dataCompounding = answers.dataCompounding as string;
   const pricingPowerQual = answers.pricingPower as string;
-  const userVerdict = answers.finalVerdict as string;
 
   // Build weak signals list
   const weakSignals: WeakSignal[] = [
@@ -112,20 +131,15 @@ function calculateVerdict(answers: TestAnswers): TestResult {
   // Determine verdict based on heuristics
   let verdict: Verdict;
 
-  if (userVerdict) {
-    // If user provided a verdict, respect it but validate
-    verdict = userVerdict as Verdict;
+  // Auto-determine based on signals
+  if (weakCount >= 3) {
+    verdict = 'kill';
+  } else if (weakCount === 2) {
+    verdict = 'flip';
+  } else if (lockInStrength >= 6 && pricingPower >= 6 && copycatRisk <= 5) {
+    verdict = 'build';
   } else {
-    // Auto-determine based on signals
-    if (weakCount >= 3) {
-      verdict = 'kill';
-    } else if (weakCount === 2) {
-      verdict = 'flip';
-    } else if (lockInStrength >= 6 && pricingPower >= 6 && copycatRisk <= 5) {
-      verdict = 'build';
-    } else {
-      verdict = 'bet';
-    }
+    verdict = 'bet';
   }
 
   // Generate compounding story based on weak signals
@@ -196,6 +210,7 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
   const [answers, setAnswers] = useState<TestAnswers>({});
   const [isStarted, setIsStarted] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<TestResult | null>(null);
 
   const totalQuestions = getTotalQuestions();
@@ -240,17 +255,79 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
     }
   }, [currentQuestionIndex]);
 
-  const submitTest = useCallback(() => {
-    const testResult = calculateVerdict(answers);
-    setResult(testResult);
+  const submitTest = useCallback(async () => {
+    setIsAnalyzing(true);
     setIsCompleted(true);
+
+    // Start with offline calculation (will be updated by AI)
+    const offlineResult = calculateOfflineVerdict(answers);
+    setResult(offlineResult);
+
+    try {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers }),
+      });
+
+      if (response.ok) {
+        const aiResult = await response.json();
+
+        // Update result with AI analysis
+        setResult({
+          ...offlineResult,
+          verdict: aiResult.verdict,
+          aiAnalysis: {
+            confidence: aiResult.confidence,
+            rationale: aiResult.rationale,
+            contradictions: aiResult.contradictions || [],
+            adjustedScores: aiResult.adjustedScores,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('AI analysis failed:', error);
+      // Keep offline result
+    } finally {
+      setIsAnalyzing(false);
+    }
   }, [answers]);
 
-  const submitWithAnswers = useCallback((externalAnswers: TestAnswers) => {
+  const submitWithAnswers = useCallback(async (externalAnswers: TestAnswers) => {
     setAnswers(externalAnswers);
-    const testResult = calculateVerdict(externalAnswers);
-    setResult(testResult);
+    setIsAnalyzing(true);
     setIsCompleted(true);
+
+    // Start with offline calculation
+    const offlineResult = calculateOfflineVerdict(externalAnswers);
+    setResult(offlineResult);
+
+    try {
+      const response = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers: externalAnswers }),
+      });
+
+      if (response.ok) {
+        const aiResult = await response.json();
+
+        setResult({
+          ...offlineResult,
+          verdict: aiResult.verdict,
+          aiAnalysis: {
+            confidence: aiResult.confidence,
+            rationale: aiResult.rationale,
+            contradictions: aiResult.contradictions || [],
+            adjustedScores: aiResult.adjustedScores,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('AI analysis failed:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
   }, []);
 
   const resetTest = useCallback(() => {
@@ -268,6 +345,7 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
         answers,
         isStarted,
         isCompleted,
+        isAnalyzing,
         result,
         totalQuestions,
         startTest,
@@ -291,6 +369,7 @@ const defaultContext: KillTestContextType = {
   answers: {},
   isStarted: false,
   isCompleted: false,
+  isAnalyzing: false,
   result: null,
   totalQuestions: getTotalQuestions(),
   startTest: () => {},
