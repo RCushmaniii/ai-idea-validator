@@ -16,17 +16,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    const stored = localStorage.getItem('language') as Language | null;
-    if (stored && (stored === 'en' || stored === 'es')) {
-      setLanguageState(stored);
-    } else {
-      // Check browser language
-      const browserLang = navigator.language.toLowerCase();
-      if (browserLang.startsWith('es')) {
-        setLanguageState('es');
+    // Defer all state updates to avoid sync setState in effect
+    requestAnimationFrame(() => {
+      // Read stored language preference
+      const stored = localStorage.getItem('language') as Language | null;
+      if (stored && (stored === 'en' || stored === 'es')) {
+        setLanguageState(stored);
+      } else {
+        // Check browser language
+        const browserLang = navigator.language.toLowerCase();
+        if (browserLang.startsWith('es')) {
+          setLanguageState('es');
+        }
       }
-    }
+      setMounted(true);
+    });
   }, []);
 
   useEffect(() => {

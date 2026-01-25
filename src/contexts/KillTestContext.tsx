@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useCallback } from 'react';
 import { getAllQuestions, getTotalQuestions } from '@/lib/killTestQuestions';
 
-export type Verdict = 'kill' | 'pivot' | 'build' | 'bet';
+export type Verdict = 'kill' | 'flip' | 'build' | 'bet';
 
 export interface TestAnswers {
   [key: string]: string | number;
@@ -120,7 +120,7 @@ function calculateVerdict(answers: TestAnswers): TestResult {
     if (weakCount >= 3) {
       verdict = 'kill';
     } else if (weakCount === 2) {
-      verdict = 'pivot';
+      verdict = 'flip';
     } else if (lockInStrength >= 6 && pricingPower >= 6 && copycatRisk <= 5) {
       verdict = 'build';
     } else {

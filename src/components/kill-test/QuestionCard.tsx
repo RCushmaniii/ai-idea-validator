@@ -27,8 +27,10 @@ export function QuestionCard() {
     if (inputRef.current) {
       inputRef.current.focus();
     }
-    // Close helper when question changes
-    setHelperOpen(false);
+    // Close helper when question changes (deferred to avoid sync setState in effect)
+    requestAnimationFrame(() => {
+      setHelperOpen(false);
+    });
   }, [currentQuestionIndex]);
 
   const handleKeyDown = useCallback(

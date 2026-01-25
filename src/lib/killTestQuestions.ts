@@ -557,14 +557,14 @@ Pregunta:
       {
         id: 'finalVerdict',
         type: 'verdict',
-        options: ['kill', 'pivot', 'build', 'bet'],
+        options: ['kill', 'flip', 'build', 'bet'],
         required: true,
         helper: {
           en: {
             title: 'What each verdict means',
             content: `• **KILL** — Fundamentally weak. Too many structural problems. Move on.
 
-• **PIVOT** — Has potential but needs a significant pivot. Rethink the positioning or model.
+• **FLIP** — Has potential but needs a significant pivot. Rethink the positioning or model.
 
 • **BUILD** — Defensible with discipline. Execute carefully and focus on moats.
 
@@ -576,7 +576,7 @@ Be honest. Killing an idea early is success, not failure.`,
             title: 'Qué significa cada veredicto',
             content: `• **KILL** — Fundamentalmente débil. Demasiados problemas estructurales. Sigue adelante.
 
-• **PIVOT** — Tiene potencial pero necesita un pivote significativo. Repiensa el posicionamiento.
+• **FLIP** — Tiene potencial pero necesita un pivote significativo. Repiensa el posicionamiento.
 
 • **BUILD** — Defendible con disciplina. Ejecuta cuidadosamente y enfócate en fosos.
 

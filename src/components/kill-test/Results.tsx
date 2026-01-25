@@ -46,7 +46,7 @@ const verdictColors: Record<Verdict, { bg: string; border: string; text: string 
     border: 'border-red-200 dark:border-red-900/50',
     text: 'text-red-700 dark:text-red-400',
   },
-  pivot: {
+  flip: {
     bg: 'bg-yellow-50 dark:bg-yellow-950/30',
     border: 'border-yellow-200 dark:border-yellow-900/50',
     text: 'text-yellow-700 dark:text-yellow-400',
@@ -65,7 +65,7 @@ const verdictColors: Record<Verdict, { bg: string; border: string; text: string 
 
 const verdictLabels: Record<Verdict, { en: string; es: string }> = {
   kill: { en: 'Stop here.', es: 'Detente aqui.' },
-  pivot: { en: 'Consider a pivot.', es: 'Considera un pivote.' },
+  flip: { en: 'Consider a pivot.', es: 'Considera un pivote.' },
   build: { en: 'You should build this!', es: 'Deberias construir esto!' },
   bet: { en: 'A calculated risk.', es: 'Un riesgo calculado.' },
 };

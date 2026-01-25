@@ -14,7 +14,10 @@ export function Header() {
 
   // Close menu on route change
   useEffect(() => {
-    setMobileMenuOpen(false);
+    // Defer state update to avoid synchronous setState in effect
+    requestAnimationFrame(() => {
+      setMobileMenuOpen(false);
+    });
   }, [pathname]);
 
   // Prevent body scroll when menu is open

@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { useKillTest, TestAnswers } from '@/contexts/KillTestContext';
+import type { TestAnswers } from '@/contexts/KillTestContext';
 
 interface JsonInputData {
   meta?: {
@@ -208,7 +208,7 @@ function convertJsonToAnswers(json: JsonInputData): TestAnswers {
   if (json.initial_verdict?.founder_verdict) {
     const verdict = json.initial_verdict.founder_verdict.toLowerCase();
     if (verdict === 'kill') answers.finalVerdict = 'kill';
-    else if (verdict === 'pivot') answers.finalVerdict = 'pivot';
+    else if (verdict === 'flip' || verdict === 'pivot') answers.finalVerdict = 'flip';
     else if (verdict === 'build') answers.finalVerdict = 'build';
     else if (verdict === 'bet') answers.finalVerdict = 'bet';
   }
@@ -320,7 +320,6 @@ interface JsonUploadProps {
 
 export function JsonUpload({ onBack }: JsonUploadProps) {
   const { language } = useLanguage();
-  const { submitTest } = useKillTest();
   const [jsonText, setJsonText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<JsonInputData | null>(null);

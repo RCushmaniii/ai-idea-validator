@@ -1,20 +1,20 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useKillTest, TestAnswers } from '@/contexts/KillTestContext';
 import { TestIntro, QuestionCard, Results } from '@/components/kill-test';
 import { EntryPoint } from '@/components/kill-test/EntryPoint';
 import { JsonUpload } from '@/components/kill-test/JsonUpload';
 
-type Mode = 'entry' | 'guided-intro' | 'guided-test' | 'json-upload' | 'results';
+type LocalMode = 'entry' | 'guided-intro' | 'json-upload';
 
 export default function KillTestPage() {
   const { isStarted, isCompleted, submitWithAnswers } = useKillTest();
-  const [mode, setMode] = useState<Mode>('entry');
+  const [localMode, setLocalMode] = useState<LocalMode>('entry');
   const [isLoading, setIsLoading] = useState(true);
 
   // Check for JSON result mode from URL params on mount
-  useEffect(() => {
+  const checkJsonParams = useCallback(() => {
     const params = new URLSearchParams(window.location.search);
     const urlMode = params.get('mode');
 
@@ -25,38 +25,38 @@ export default function KillTestPage() {
           const answers = JSON.parse(storedAnswers) as TestAnswers;
           submitWithAnswers(answers);
           sessionStorage.removeItem('killtest-json-answers');
-          // Clean up URL
           window.history.replaceState({}, '', '/kill-test');
         } catch (e) {
           console.error('Failed to parse stored answers:', e);
         }
       }
     }
-    setIsLoading(false);
   }, [submitWithAnswers]);
 
-  // Sync mode with context state
   useEffect(() => {
-    if (isCompleted) {
-      setMode('results');
-    } else if (isStarted) {
-      setMode('guided-test');
-    }
-  }, [isStarted, isCompleted]);
+    checkJsonParams();
+    // Use requestAnimationFrame to defer state update
+    requestAnimationFrame(() => {
+      setIsLoading(false);
+    });
+  }, [checkJsonParams]);
+
+  // Derive effective mode from context state (no effect needed)
+  const effectiveMode = isCompleted ? 'results' : isStarted ? 'guided-test' : localMode;
 
   // Handle guided test start
   const handleStartGuided = () => {
-    setMode('guided-intro');
+    setLocalMode('guided-intro');
   };
 
   // Handle JSON upload
   const handleStartJson = () => {
-    setMode('json-upload');
+    setLocalMode('json-upload');
   };
 
   // Handle back to entry
   const handleBackToEntry = () => {
-    setMode('entry');
+    setLocalMode('entry');
   };
 
   // Show loading state while checking for JSON params
@@ -68,20 +68,20 @@ export default function KillTestPage() {
     );
   }
 
-  // Render based on mode
-  if (mode === 'results' || isCompleted) {
+  // Render based on effective mode (derived from context + local state)
+  if (effectiveMode === 'results') {
     return <Results />;
   }
 
-  if (mode === 'guided-test' || isStarted) {
+  if (effectiveMode === 'guided-test') {
     return <QuestionCard />;
   }
 
-  if (mode === 'guided-intro') {
+  if (effectiveMode === 'guided-intro') {
     return <TestIntro />;
   }
 
-  if (mode === 'json-upload') {
+  if (effectiveMode === 'json-upload') {
     return <JsonUpload onBack={handleBackToEntry} />;
   }
 
