@@ -1,36 +1,120 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Idea Validator
+
+A brutally honest defensibility assessment for founders. Find out if your business idea can survive competition, platform changes, and solo-founder realities before you build.
+
+## What It Does
+
+AI Idea Validator runs your startup idea through a rigorous 12-section kill test designed to expose:
+
+- **False moats** — things that look defensible but aren't
+- **Solo-founder death spirals** — workloads that scale linearly with growth
+- **Platform dependencies** — single points of failure you're ignoring
+- **Copycat velocity** — how fast competitors can reach "good enough"
+
+The goal is simple: **prevent wasted years** on ideas that are technically correct but fundamentally replaceable.
+
+## The Kill Test Framework
+
+The assessment evaluates your idea across 12 dimensions:
+
+1. **Inevitability Test** — Should this exist at all?
+2. **Copycat Velocity Test** — 30/60/90 day competitive analysis
+3. **Tech/AI Commoditization Test** — What survives when AI gets cheaper?
+4. **Platform Hostage Test** — What single decision kills you?
+5. **Data Moat Reality Test** — No fantasy allowed
+6. **Workflow Entanglement Test** — Pain of removal score (1-10)
+7. **Pricing Power Test** — Who feels pain vs. who controls budget?
+8. **Solo-Founder Sustainability Test** — What quietly becomes human work?
+9. **Failure Mode Test** — Name how this dies
+10. **Moat Construction Path** — What's buildable in 12-24 months?
+11. **Asymmetry Test** — Best case vs. worst case
+12. **Final Verdict** — KILL, FLIP, BUILD, or BET
+
+## Verdict Options
+
+- **KILL** — Fundamentally weak, don't build
+- **FLIP** — Pivot required to survive
+- **BUILD** — Defensible with discipline
+- **BET** — Risky but asymmetric upside
+
+## Tech Stack
+
+- **Framework:** Next.js 16
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS 4
+- **React:** v19
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm, yarn, pnpm, or bun
+
+### Installation
 
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/ai-idea-validator.git
+cd ai-idea-validator
+
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+ai-idea-validator/
+├── src/
+│   ├── app/              # Next.js app router pages
+│   ├── components/       # React components
+│   ├── contexts/         # React context providers
+│   └── lib/              # Utility functions
+├── template.md           # Kill test framework template
+├── INPUT_TEMPLATE.json   # Structured input schema
+└── public/               # Static assets
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Documentation
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **template.md** — The complete kill test framework with all 12 sections
+- **INPUT_TEMPLATE.json** — JSON schema for structured idea submissions
 
-## Deploy on Vercel
+## Deployment
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Deploy to Vercel with one click:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/ai-idea-validator)
+
+Or build and deploy manually:
+
+```bash
+npm run build
+npm run start
+```
+
+## Philosophy
+
+> Most failed products were **technically correct**.
+> They failed because they were **replaceable**.
+
+This tool exists to ensure that if you build something, it becomes **deeply annoying to turn off**.
+
+## License
+
+MIT
