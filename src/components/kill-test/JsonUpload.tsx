@@ -16,6 +16,7 @@ interface JsonInputData {
     problem_statement?: string;
     why_now?: string;
     who_feels_pain_most?: string;
+    what_disappears_if_product_dies?: string;
   };
   customer?: {
     primary_payer?: {
@@ -75,11 +76,10 @@ interface JsonInputData {
     founder_risk_description?: string;
   };
   scoring?: {
-    copycat_risk?: number;
-    platform_risk?: number;
-    lock_in_strength?: number;
-    pricing_power?: number;
-    overall_confidence?: number;
+    copycat_risk?: number | null;
+    platform_risk?: number | null;
+    lock_in_strength?: number | null;
+    pricing_power?: number | null;
   };
   assumptions?: {
     most_critical_assumptions?: string[];
@@ -90,11 +90,7 @@ interface JsonInputData {
     emotional_attachment_level?: number;
     would_i_fund_this_if_not_my_idea?: string;
     biggest_blind_spot?: string;
-  };
-  initial_verdict?: {
-    founder_verdict?: string;
-    reasoning?: string;
-    what_would_change_my_mind?: string;
+    biggest_unresolved_risk?: string;
   };
 }
 
@@ -127,9 +123,6 @@ function convertJsonToAnswers(json: JsonInputData): TestAnswers {
   }
   if (json.platform_and_dependencies?.core_platforms) {
     answers.platformDependencies = json.platform_and_dependencies.core_platforms.join(', ');
-  }
-  if (json.idea_definition?.problem_statement) {
-    answers.disappearanceTest = json.idea_definition.problem_statement;
   }
 
   // Kill Test section
@@ -204,34 +197,43 @@ function convertJsonToAnswers(json: JsonInputData): TestAnswers {
     answers.pricingPowerScore = json.scoring.pricing_power;
   }
 
-  // Verdict section
-  if (json.initial_verdict?.founder_verdict) {
-    const verdict = json.initial_verdict.founder_verdict.toLowerCase();
-    if (verdict === 'kill') answers.finalVerdict = 'kill';
-    else if (verdict === 'flip' || verdict === 'pivot') answers.finalVerdict = 'flip';
-    else if (verdict === 'build') answers.finalVerdict = 'build';
-    else if (verdict === 'bet') answers.finalVerdict = 'bet';
+  // Self reflection section (AI generates verdict in v2.0)
+  if (json.self_reflection?.biggest_unresolved_risk) {
+    answers.biggestUnresolvedRisk = json.self_reflection.biggest_unresolved_risk;
+  } else if (json.self_reflection?.biggest_blind_spot) {
+    answers.biggestUnresolvedRisk = json.self_reflection.biggest_blind_spot;
   }
-  if (json.self_reflection?.biggest_blind_spot || json.initial_verdict?.what_would_change_my_mind) {
-    answers.biggestUnresolvedRisk = json.self_reflection?.biggest_blind_spot || json.initial_verdict?.what_would_change_my_mind || '';
+
+  // Map disappearance test from new field
+  if (json.idea_definition?.what_disappears_if_product_dies) {
+    answers.disappearanceTest = json.idea_definition.what_disappears_if_product_dies;
+  } else if (json.idea_definition?.problem_statement) {
+    answers.disappearanceTest = json.idea_definition.problem_statement;
   }
 
   return answers;
 }
 
-// Empty JSON template for download
+// Empty JSON template for download (v2.0 - AI generates verdict)
 const JSON_TEMPLATE = `{
+  "_schema_documentation": {
+    "description": "AI Idea Validator - Structured input schema for defensibility assessment",
+    "scoring_scale": "All numeric scores use a 1-10 scale where 1=lowest risk/strength and 10=highest",
+    "enum_fields": "Fields showing 'option1 | option2' are enums - choose exactly one value",
+    "note": "AI generates the final verdict based on your responses. Be brutally honest."
+  },
   "meta": {
-    "schema_version": "1.1",
+    "schema_version": "2.0",
     "language": "en",
-    "created_with": "human+ai",
+    "created_with": "human",
     "confidence_level": "medium"
   },
   "idea_definition": {
     "one_liner": "",
     "problem_statement": "",
     "why_now": "",
-    "who_feels_pain_most": ""
+    "who_feels_pain_most": "",
+    "what_disappears_if_product_dies": ""
   },
   "customer": {
     "primary_payer": {
@@ -252,14 +254,14 @@ const JSON_TEMPLATE = `{
     "event": "",
     "decision": "",
     "action": "",
-    "frequency": "weekly",
-    "criticality": "medium"
+    "frequency": "daily | weekly | monthly | ad_hoc",
+    "criticality": "low | medium | high"
   },
   "value_and_money": {
     "value_proposition": "",
-    "value_type": "convenience",
+    "value_type": "revenue_gain | cost_reduction | risk_avoidance | convenience",
     "monetization_model": "",
-    "pricing_anchor": "subscription",
+    "pricing_anchor": "usage | subscription | outcome | contract",
     "estimated_willingness_to_pay": ""
   },
   "platform_and_dependencies": {
@@ -278,10 +280,10 @@ const JSON_TEMPLATE = `{
   },
   "data_and_learning": {
     "data_collected": [],
-    "data_type": "behavioral",
-    "data_owner": "you",
+    "data_type": "behavioral | transactional | outcome | none",
+    "data_owner": "you | customer | platform",
     "learning_loops": "",
-    "does_data_compound": "somewhat"
+    "does_data_compound": "yes | somewhat | no"
   },
   "risks_and_failure": {
     "primary_failure_mode": "",
@@ -291,11 +293,11 @@ const JSON_TEMPLATE = `{
     "founder_risk_description": ""
   },
   "scoring": {
-    "copycat_risk": 5,
-    "platform_risk": 5,
-    "lock_in_strength": 5,
-    "pricing_power": 5,
-    "overall_confidence": 5
+    "_note": "All scores use 1-10 scale. Higher = greater risk or strength depending on field. AI will compare these against your written responses.",
+    "copycat_risk": null,
+    "platform_risk": null,
+    "lock_in_strength": null,
+    "pricing_power": null
   },
   "assumptions": {
     "most_critical_assumptions": [],
@@ -303,14 +305,10 @@ const JSON_TEMPLATE = `{
     "assumptions_not_yet_tested": []
   },
   "self_reflection": {
-    "emotional_attachment_level": 5,
-    "would_i_fund_this_if_not_my_idea": "unsure",
-    "biggest_blind_spot": ""
-  },
-  "initial_verdict": {
-    "founder_verdict": "BUILD",
-    "reasoning": "",
-    "what_would_change_my_mind": ""
+    "emotional_attachment_level": 1,
+    "would_i_fund_this_if_not_my_idea": "yes | no | unsure",
+    "biggest_blind_spot": "",
+    "biggest_unresolved_risk": ""
   }
 }`;
 
@@ -345,7 +343,7 @@ export function JsonUpload({ onBack }: JsonUploadProps) {
         title: 'Preview',
         idea: 'Idea',
         scores: 'Scores',
-        verdict: 'Your Verdict',
+        biggestRisk: 'Biggest Risk',
       },
     },
     es: {
@@ -367,7 +365,7 @@ export function JsonUpload({ onBack }: JsonUploadProps) {
         title: 'Vista Previa',
         idea: 'Idea',
         scores: 'Puntuaciones',
-        verdict: 'Tu Veredicto',
+        biggestRisk: 'Mayor Riesgo',
       },
     },
   };
@@ -606,13 +604,13 @@ export function JsonUpload({ onBack }: JsonUploadProps) {
                 </div>
               )}
 
-              {preview.initial_verdict?.founder_verdict && (
+              {preview.self_reflection?.biggest_unresolved_risk && (
                 <div>
                   <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-                    {text.preview.verdict}
+                    {language === 'en' ? 'Biggest Risk' : 'Mayor Riesgo'}
                   </span>
-                  <p className="mt-1 font-bold text-orange-600 dark:text-orange-500">
-                    {preview.initial_verdict.founder_verdict}
+                  <p className="mt-1 text-neutral-900 dark:text-white">
+                    {preview.self_reflection.biggest_unresolved_risk}
                   </p>
                 </div>
               )}
