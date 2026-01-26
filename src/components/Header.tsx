@@ -33,9 +33,9 @@ export function Header() {
   }, [mobileMenuOpen]);
 
   const navItems = [
-    { href: '/', label: t.nav.home },
     { href: '/about', label: t.nav.about },
     { href: '/kill-test', label: t.nav.killTest },
+    { href: '/support', label: t.nav.support },
   ];
 
   return (

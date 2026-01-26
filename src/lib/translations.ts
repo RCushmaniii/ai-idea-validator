@@ -7,6 +7,7 @@ export const translations = {
       home: 'Home',
       about: 'About',
       killTest: 'AI Idea Validator',
+      support: 'Support',
     },
 
     // Header
@@ -419,6 +420,7 @@ export const translations = {
       home: 'Inicio',
       about: 'Acerca de',
       killTest: 'AI Idea Validator',
+      support: 'Soporte',
     },
 
     // Header

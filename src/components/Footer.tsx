@@ -101,9 +101,15 @@ export function Footer() {
   }, []);
 
   const navItems = [
-    { href: '/', label: t.nav.home },
     { href: '/about', label: t.nav.about },
     { href: '/kill-test', label: t.nav.killTest },
+  ];
+
+  const supportItems = [
+    { href: '/support', label: t.nav.support },
+    { href: '/docs', label: language === 'en' ? 'Documentation' : 'Documentación' },
+    { href: '/faq', label: language === 'en' ? 'FAQ' : 'Preguntas Frecuentes' },
+    { href: '/contact', label: language === 'en' ? 'Contact' : 'Contacto' },
   ];
 
   const legalItems = [
@@ -114,7 +120,7 @@ export function Footer() {
   return (
     <footer className="border-t border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-950">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Link
@@ -138,6 +144,24 @@ export function Footer() {
             </h3>
             <nav className="mt-4 flex flex-col gap-2">
               {navItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="text-sm text-neutral-600 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white"
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+
+          {/* Support */}
+          <div>
+            <h3 className="text-sm font-semibold text-neutral-900 dark:text-white">
+              {t.nav.support}
+            </h3>
+            <nav className="mt-4 flex flex-col gap-2">
+              {supportItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
