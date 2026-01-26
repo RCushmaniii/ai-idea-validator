@@ -1,120 +1,197 @@
 # AI Idea Validator
 
-A brutally honest defensibility assessment for founders. Find out if your business idea can survive competition, platform changes, and solo-founder realities before you build.
+A defensibility assessment tool that uses AI to evaluate startup ideas and detect founder optimism bias. Analyzes 23 questions across 4 sections, then generates a verdict (KILL, FLIP, BUILD, or BET) with contradiction detection between self-assessment scores and written responses.
 
-## What It Does
+## Key Features
 
-AI Idea Validator runs your startup idea through a rigorous 12-section kill test designed to expose:
+| Feature | Benefit |
+|---------|---------|
+| AI-Driven Verdicts | GPT-4o-mini analyzes qualitative responses, not just numeric scores |
+| Contradiction Detection | Identifies gaps between founder self-assessment and written answers |
+| Score Adjustment | Shows difference between perceived risk and AI-evaluated risk |
+| Bilingual Support | Full English and Spanish support, including AI-generated content |
+| Offline Fallback | Heuristic-based analysis when API is unavailable |
+| JSON Import/Export | Prepare assessments offline or integrate with other AI workflows |
 
-- **False moats** — things that look defensible but aren't
-- **Solo-founder death spirals** — workloads that scale linearly with growth
-- **Platform dependencies** — single points of failure you're ignoring
-- **Copycat velocity** — how fast competitors can reach "good enough"
-
-The goal is simple: **prevent wasted years** on ideas that are technically correct but fundamentally replaceable.
-
-## The Kill Test Framework
-
-The assessment evaluates your idea across 12 dimensions:
-
-1. **Inevitability Test** — Should this exist at all?
-2. **Copycat Velocity Test** — 30/60/90 day competitive analysis
-3. **Tech/AI Commoditization Test** — What survives when AI gets cheaper?
-4. **Platform Hostage Test** — What single decision kills you?
-5. **Data Moat Reality Test** — No fantasy allowed
-6. **Workflow Entanglement Test** — Pain of removal score (1-10)
-7. **Pricing Power Test** — Who feels pain vs. who controls budget?
-8. **Solo-Founder Sustainability Test** — What quietly becomes human work?
-9. **Failure Mode Test** — Name how this dies
-10. **Moat Construction Path** — What's buildable in 12-24 months?
-11. **Asymmetry Test** — Best case vs. worst case
-12. **Final Verdict** — KILL, FLIP, BUILD, or BET
-
-## Verdict Options
-
-- **KILL** — Fundamentally weak, don't build
-- **FLIP** — Pivot required to survive
-- **BUILD** — Defensible with discipline
-- **BET** — Risky but asymmetric upside
-
-## Tech Stack
-
-- **Framework:** Next.js 16
-- **Language:** TypeScript
-- **Styling:** Tailwind CSS 4
-- **React:** v19
-
-## Getting Started
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- npm, yarn, pnpm, or bun
+- Node.js 18.17 or higher
+- OpenAI API key (optional, enables AI analysis)
 
 ### Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/ai-idea-validator.git
+```powershell
+# 1. Clone the repository
+git clone https://github.com/RCushmaniii/ai-idea-validator.git
 cd ai-idea-validator
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Start development server
+# 3. Configure environment (optional, for AI features)
+copy .env.example .env
+notepad .env
+# Add your OpenAI API key: OPENAI_API_KEY=sk-your-key
+
+# 4. Start development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+Open http://localhost:3000 in your browser. Expected: Homepage loads with "AI Idea Validator" header.
 
-### Available Scripts
+## Verdict Types
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
+| Verdict | Meaning |
+|---------|---------|
+| **KILL** | Fundamentally weak. Too many structural problems. Move on. |
+| **FLIP** | Has potential but needs a significant pivot. Rethink positioning or model. |
+| **BUILD** | Defensible with discipline. Execute carefully and focus on moats. |
+| **BET** | Risky but asymmetric upside. The potential reward justifies the gamble. |
 
 ## Project Structure
 
 ```
 ai-idea-validator/
 ├── src/
-│   ├── app/              # Next.js app router pages
-│   ├── components/       # React components
-│   ├── contexts/         # React context providers
-│   └── lib/              # Utility functions
-├── template.md           # Kill test framework template
-├── INPUT_TEMPLATE.json   # Structured input schema
-└── public/               # Static assets
+│   ├── app/                    # Next.js App Router pages
+│   │   ├── api/analyze/        # AI analysis API endpoint
+│   │   ├── about/              # About page
+│   │   ├── kill-test/          # Main assessment flow
+│   │   ├── privacy/            # Privacy policy
+│   │   └── terms/              # Terms of service
+│   ├── components/
+│   │   ├── home/               # Landing page components
+│   │   └── kill-test/          # Assessment UI components
+│   ├── contexts/               # React context providers
+│   │   ├── KillTestContext.tsx # Assessment state management
+│   │   ├── LanguageContext.tsx # i18n support
+│   │   └── ThemeContext.tsx    # Dark/light mode
+│   └── lib/
+│       ├── analyzeIdea.ts      # AI analysis logic
+│       ├── killTestQuestions.ts # Question definitions
+│       └── translations.ts     # EN/ES translations
+├── INPUT_TEMPLATE.json         # v2.0 JSON schema for structured input
+├── template.md                 # Kill test framework documentation
+├── netlify.toml                # Netlify deployment configuration
+└── .env.example                # Environment variable template
 ```
 
-## Documentation
+## Available Scripts
 
-- **template.md** — The complete kill test framework with all 12 sections
-- **INPUT_TEMPLATE.json** — JSON schema for structured idea submissions
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server (Webpack) |
+| `npm run dev:turbo` | Start development server (Turbopack) |
+| `npm run build` | Build for production |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm run lint:fix` | Fix ESLint issues |
+| `npm run typecheck` | TypeScript type checking |
+| `npm run ci` | Full CI pipeline (lint + typecheck + build) |
+
+## Configuration
+
+### Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `OPENAI_API_KEY` | No | OpenAI API key for AI-powered analysis. Without this, falls back to heuristic analysis. |
+
+### JSON Input Schema
+
+For programmatic or AI-assisted workflows, use `INPUT_TEMPLATE.json` (v2.0):
+
+```json
+{
+  "meta": {
+    "schema_version": "2.0",
+    "language": "en"
+  },
+  "idea_definition": {
+    "one_liner": "Your idea in one sentence",
+    "what_disappears_if_product_dies": "Customer impact"
+  },
+  "scoring": {
+    "copycat_risk": 5,
+    "platform_risk": 5,
+    "lock_in_strength": 5,
+    "pricing_power": 5
+  },
+  "self_reflection": {
+    "biggest_unresolved_risk": "The elephant in the room"
+  }
+}
+```
+
+## Tech Stack
+
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Next.js | 15.5.9 | React framework with App Router |
+| React | 19.2.3 | UI library |
+| TypeScript | 5.x | Type safety |
+| Tailwind CSS | 4.x | Styling |
+| OpenAI API | gpt-4o-mini | AI analysis |
 
 ## Deployment
 
-Deploy to Vercel with one click:
+### Netlify (Recommended)
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/ai-idea-validator)
+The repository includes `netlify.toml` with optimized configuration:
 
-Or build and deploy manually:
-
-```bash
+```powershell
+# Build command
 npm run build
+
+# Publish directory
+.next
+```
+
+Set `OPENAI_API_KEY` in Netlify environment variables for AI features.
+
+### Manual Deployment
+
+```powershell
+# Build production bundle
+npm run build
+
+# Start production server
 npm run start
 ```
 
+## Security
+
+- API keys stored in environment variables only
+- OpenAI calls made server-side via API route
+- No client-side exposure of secrets
+- Input sanitization on all user responses
+
 ## Philosophy
 
-> Most failed products were **technically correct**.
-> They failed because they were **replaceable**.
+> Most failed products were technically correct. They failed because they were replaceable.
 
-This tool exists to ensure that if you build something, it becomes **deeply annoying to turn off**.
+This tool exists to ensure that if you build something, it becomes deeply annoying to turn off.
 
 ## License
 
 MIT
+
+## Version
+
+v1.0.0 - Initial Release
+
+### Changelog
+
+- AI-driven verdict generation with GPT-4o-mini
+- Contradiction detection between scores and written responses
+- Full English and Spanish language support
+- JSON import/export for structured workflows
+- Offline heuristic fallback when API unavailable
+- Dark/light theme support
+- Mobile-responsive design
+
+---
+
+Built for founders who value their time.
