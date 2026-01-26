@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useCallback } from 'react';
 import { getAllQuestions, getTotalQuestions } from '@/lib/killTestQuestions';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export type Verdict = 'kill' | 'flip' | 'build' | 'bet';
 
@@ -212,6 +213,7 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
   const [isCompleted, setIsCompleted] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<TestResult | null>(null);
+  const { language } = useLanguage();
 
   const totalQuestions = getTotalQuestions();
   const allQuestions = getAllQuestions();
@@ -267,7 +269,7 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers }),
+        body: JSON.stringify({ answers, language }),
       });
 
       if (response.ok) {
@@ -291,7 +293,7 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsAnalyzing(false);
     }
-  }, [answers]);
+  }, [answers, language]);
 
   const submitWithAnswers = useCallback(async (externalAnswers: TestAnswers) => {
     setAnswers(externalAnswers);
@@ -306,7 +308,7 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers: externalAnswers }),
+        body: JSON.stringify({ answers: externalAnswers, language }),
       });
 
       if (response.ok) {
@@ -328,7 +330,7 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsAnalyzing(false);
     }
-  }, []);
+  }, [language]);
 
   const resetTest = useCallback(() => {
     setCurrentQuestionIndex(0);

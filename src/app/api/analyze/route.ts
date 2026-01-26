@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import type { TestAnswers } from '@/contexts/KillTestContext';
 
 export type Verdict = 'kill' | 'flip' | 'build' | 'bet';
+export type Language = 'en' | 'es';
 
 export interface AnalysisResult {
   verdict: Verdict;
@@ -20,7 +21,7 @@ export interface AnalysisResult {
   };
 }
 
-const ANALYSIS_PROMPT = `You are a brutally honest startup idea evaluator. Your job is to cut through founder optimism and identify real weaknesses.
+const ANALYSIS_PROMPT_EN = `You are a brutally honest startup idea evaluator. Your job is to cut through founder optimism and identify real weaknesses.
 
 Analyze this founder's responses and:
 
@@ -65,7 +66,52 @@ Respond in JSON only (no markdown, no explanation outside JSON):
   }
 }`;
 
-function buildPrompt(answers: TestAnswers): string {
+const ANALYSIS_PROMPT_ES = `Eres un evaluador de ideas de startup brutalmente honesto. Tu trabajo es cortar el optimismo del fundador e identificar debilidades reales.
+
+Analiza las respuestas de este fundador y:
+
+1. Genera un veredicto:
+   - KILL: Fundamentalmente debil. Demasiados problemas estructurales. Sigue adelante.
+   - FLIP: Tiene potencial pero necesita un pivote significativo. Repiensa el posicionamiento o modelo.
+   - BUILD: Defendible con disciplina. Ejecuta cuidadosamente y enfocate en los fosos.
+   - BET: Arriesgado pero con potencial asimetrico. La recompensa potencial justifica la apuesta.
+
+2. Identifica contradicciones entre sus respuestas escritas y sus puntuaciones de autoevaluacion. Busca:
+   - Puntuaciones optimistas que no coinciden con respuestas escritas preocupantes
+   - Afirmaciones de defendibilidad sin evidencia
+   - Subestimacion del riesgo de plataforma o de copia
+   - Sobreestimacion del lock-in o poder de precios
+
+3. Proporciona puntuaciones de riesgo ajustadas basadas en lo que realmente describieron (no lo que puntuaron).
+
+## Respuestas del Fundador:
+{RESPONSES}
+
+## Puntuaciones de Autoevaluacion:
+- Riesgo de Copia: {COPYCAT_RISK}/10 (mayor = mas facil de copiar)
+- Riesgo de Plataforma: {PLATFORM_RISK}/10 (mayor = mas dependiente)
+- Fuerza de Lock-in: {LOCKIN_STRENGTH}/10 (mayor = mas pegajoso)
+- Poder de Precios: {PRICING_POWER}/10 (mayor = puede cobrar mas)
+
+Se directo y honesto. Si esta idea tiene fallas fatales, dilo claramente. Los fundadores necesitan verdad, no aliento.
+
+Responde SOLO en JSON (sin markdown, sin explicacion fuera del JSON). El rationale y las contradicciones DEBEN estar en espanol:
+{
+  "verdict": "kill" | "flip" | "build" | "bet",
+  "confidence": 0-100,
+  "rationale": "2-3 oraciones explicando tu veredicto en espanol. Se especifico sobre los problemas o fortalezas clave.",
+  "contradictions": [
+    {"field": "fieldName", "userScore": 8, "issue": "Explicacion especifica de la contradiccion en espanol..."}
+  ],
+  "adjustedScores": {
+    "copycatRisk": 1-10,
+    "platformRisk": 1-10,
+    "lockInStrength": 1-10,
+    "pricingPower": 1-10
+  }
+}`;
+
+function buildPrompt(answers: TestAnswers, language: Language): string {
   const responses = {
     ideaDefinition: answers.ideaDefinition || '',
     targetCustomer: answers.targetCustomer || '',
@@ -93,7 +139,9 @@ function buildPrompt(answers: TestAnswers): string {
   const lockInStrength = Number(answers.lockInStrengthScore) || 5;
   const pricingPower = Number(answers.pricingPowerScore) || 5;
 
-  return ANALYSIS_PROMPT
+  const promptTemplate = language === 'es' ? ANALYSIS_PROMPT_ES : ANALYSIS_PROMPT_EN;
+
+  return promptTemplate
     .replace('{RESPONSES}', JSON.stringify(responses, null, 2))
     .replace('{COPYCAT_RISK}', String(copycatRisk))
     .replace('{PLATFORM_RISK}', String(platformRisk))
@@ -103,15 +151,19 @@ function buildPrompt(answers: TestAnswers): string {
 
 export async function POST(request: Request) {
   try {
-    const { answers } = await request.json() as { answers: TestAnswers };
+    const { answers, language = 'en' } = await request.json() as { answers: TestAnswers; language?: Language };
 
     const apiKey = process.env.OPENAI_API_KEY;
     if (!apiKey) {
       // Return offline analysis if no API key
-      return NextResponse.json(analyzeOffline(answers));
+      return NextResponse.json(analyzeOffline(answers, language));
     }
 
-    const prompt = buildPrompt(answers);
+    const prompt = buildPrompt(answers, language);
+
+    const systemMessage = language === 'es'
+      ? 'Eres un evaluador de ideas de startup brutalmente honesto. Siempre responde con JSON valido solamente. Todas las respuestas de texto deben estar en espanol.'
+      : 'You are a brutally honest startup idea evaluator. Always respond with valid JSON only.';
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -126,7 +178,7 @@ export async function POST(request: Request) {
         messages: [
           {
             role: 'system',
-            content: 'You are a brutally honest startup idea evaluator. Always respond with valid JSON only.',
+            content: systemMessage,
           },
           {
             role: 'user',
@@ -176,7 +228,7 @@ export async function POST(request: Request) {
 }
 
 // Fallback analysis when API is unavailable
-function analyzeOffline(answers: TestAnswers): AnalysisResult {
+function analyzeOffline(answers: TestAnswers, language: Language = 'en'): AnalysisResult {
   const copycatRisk = Number(answers.copycatRiskScore) || 5;
   const platformRisk = Number(answers.platformRiskScore) || 5;
   const lockInStrength = Number(answers.lockInStrengthScore) || 5;
@@ -189,18 +241,33 @@ function analyzeOffline(answers: TestAnswers): AnalysisResult {
   let verdict: Verdict;
   let rationale: string;
 
+  const rationales = {
+    en: {
+      kill: 'High risks combined with weak defensibility signals. The combination of copycat vulnerability and platform dependency makes this structurally fragile.',
+      flip: 'The risk-to-strength ratio suggests a pivot is needed. Consider repositioning toward stronger lock-in or reduced platform dependency.',
+      bet: 'Moderate defensibility with manageable risks. Success depends heavily on execution speed and building moats before competitors catch up.',
+      build: 'Strong fundamentals with good lock-in potential. Focus on deepening customer relationships and expanding the moat while you have momentum.',
+    },
+    es: {
+      kill: 'Altos riesgos combinados con senales de defendibilidad debiles. La combinacion de vulnerabilidad a copias y dependencia de plataforma hace esto estructuralmente fragil.',
+      flip: 'La relacion riesgo-fortaleza sugiere que se necesita un pivote. Considera reposicionarte hacia un lock-in mas fuerte o menor dependencia de plataforma.',
+      bet: 'Defendibilidad moderada con riesgos manejables. El exito depende en gran medida de la velocidad de ejecucion y construir fosos antes de que los competidores te alcancen.',
+      build: 'Fundamentos solidos con buen potencial de lock-in. Enfocate en profundizar las relaciones con clientes y expandir el foso mientras tienes impulso.',
+    },
+  };
+
   if (netScore <= -3) {
     verdict = 'kill';
-    rationale = 'High risks combined with weak defensibility signals. The combination of copycat vulnerability and platform dependency makes this structurally fragile.';
+    rationale = rationales[language].kill;
   } else if (netScore <= 0) {
     verdict = 'flip';
-    rationale = 'The risk-to-strength ratio suggests a pivot is needed. Consider repositioning toward stronger lock-in or reduced platform dependency.';
+    rationale = rationales[language].flip;
   } else if (netScore <= 3) {
     verdict = 'bet';
-    rationale = 'Moderate defensibility with manageable risks. Success depends heavily on execution speed and building moats before competitors catch up.';
+    rationale = rationales[language].bet;
   } else {
     verdict = 'build';
-    rationale = 'Strong fundamentals with good lock-in potential. Focus on deepening customer relationships and expanding the moat while you have momentum.';
+    rationale = rationales[language].build;
   }
 
   return {

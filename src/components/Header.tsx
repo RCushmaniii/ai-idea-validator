@@ -45,7 +45,7 @@ export function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-xl font-bold tracking-tight text-neutral-900 dark:text-white"
+            className="text-xl font-bold tracking-tight text-orange-600 dark:text-orange-500"
           >
             {t.header.logo}
           </Link>
@@ -162,7 +162,7 @@ export function Header() {
       >
         {/* Menu Header */}
         <div className="flex h-16 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
-          <span className="text-lg font-bold text-neutral-900 dark:text-white">
+          <span className="text-lg font-bold text-orange-600 dark:text-orange-500">
             {t.header.logo}
           </span>
           <button
