@@ -121,6 +121,30 @@ export const translations = {
         button: 'Start the AI Idea Validator',
         note: 'Takes about 5-10 minutes. No signup required.',
       },
+      trust: {
+        title: 'Your Ideas Stay Yours',
+        subtitle: 'Built with privacy-first principles',
+        badges: [
+          {
+            title: 'No Account Required',
+            description: 'Start immediately. No signup, no email, no tracking.',
+          },
+          {
+            title: 'Browser-Based Processing',
+            description: 'Your answers are processed locally. Nothing stored on our servers.',
+          },
+          {
+            title: 'Open Source',
+            description: 'Verify our claims yourself. Full code transparency on GitHub.',
+          },
+          {
+            title: 'Session-Only Data',
+            description: 'Close your browser, data disappears. No persistent storage.',
+          },
+        ],
+        privacyLink: 'Read our full privacy policy',
+        githubLink: 'View source code',
+      },
     },
 
     // About page
@@ -508,6 +532,30 @@ export const translations = {
         description: 'Deja de adivinar. Deja de esperar. Obten una respuesta clara sobre si tu idea tiene lo que se necesita.',
         button: 'Comenzar el AI Idea Validator',
         note: 'Toma unos 5-10 minutos. No requiere registro.',
+      },
+      trust: {
+        title: 'Tus Ideas Son Tuyas',
+        subtitle: 'Construido con principios de privacidad primero',
+        badges: [
+          {
+            title: 'Sin Cuenta Requerida',
+            description: 'Comienza inmediatamente. Sin registro, sin email, sin rastreo.',
+          },
+          {
+            title: 'Procesamiento en el Navegador',
+            description: 'Tus respuestas se procesan localmente. Nada se guarda en nuestros servidores.',
+          },
+          {
+            title: 'Codigo Abierto',
+            description: 'Verifica nuestras afirmaciones. Transparencia total del codigo en GitHub.',
+          },
+          {
+            title: 'Datos Solo en Sesion',
+            description: 'Cierra tu navegador, los datos desaparecen. Sin almacenamiento persistente.',
+          },
+        ],
+        privacyLink: 'Lee nuestra politica de privacidad completa',
+        githubLink: 'Ver codigo fuente',
       },
     },
 

@@ -196,28 +196,48 @@ npm run start
 
 ---
 
+## Privacy
+
+Your ideas are safe with us:
+
+| Principle | Implementation |
+|-----------|----------------|
+| **No Account Required** | Start immediately—no signup, email, or tracking |
+| **Browser-Based Processing** | Answers processed locally; nothing stored on our servers |
+| **Open Source** | Full code transparency—verify our claims yourself |
+| **Session-Only Data** | Close browser, data disappears; no persistent storage |
+| **AI Analysis** | Your idea goes directly to OpenAI for analysis, then results returned—we don't store the content |
+
+Read the full [Privacy Policy](https://ai-idea-validator.netlify.app/privacy).
+
+---
+
 ## Version
 
-**v1.5.0** (2025-01-25)
+**v2.0.0** (2025-01-26)
 
 ### Changelog
 
-**AI Analysis**
+**v2.0.0 - Trust Edition**
+- New TrustBadges section on homepage with 4 privacy guarantees
+- Privacy trust banner on assessment entry page
+- Full bilingual (EN/ES) trust messaging
+- GitHub link for open-source code verification
+- Updated Privacy section in README
+- Privacy-first positioning throughout the app
+
+**v1.5.0 - AI Analysis**
 - GPT-4o-mini verdict generation
 - Contradiction detection (score vs written response)
 - Spanish language support for AI output
 
-**UI/UX**
+**v1.0.0 - Initial Release**
 - Orange branded navigation logo
 - Fixed 640px question card width
 - Dark/light theme toggle
-
-**Infrastructure**
 - Next.js 15.5.9 (Windows stability)
 - Netlify deployment config
 - Offline heuristic fallback
-
-**Schema**
 - INPUT_TEMPLATE.json v2.0
 - AI generates verdict (removed user selection)
 - Added `biggest_unresolved_risk` field
