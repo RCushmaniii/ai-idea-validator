@@ -1,6 +1,6 @@
 {
   "name": "ai-idea-validator",
-  "version": "1.0.0",
+  "version": "1.5.0",
   "private": true,
   "description": "A brutally honest defensibility assessment for founders. Run the AI Idea Validator to find out if your business idea can survive.",
   "scripts": {

@@ -180,17 +180,40 @@ MIT
 
 ## Version
 
-v1.0.0 - Initial Release
+**v1.5.0** - Production Release
 
 ### Changelog
 
-- AI-driven verdict generation with GPT-4o-mini
-- Contradiction detection between scores and written responses
-- Full English and Spanish language support
-- JSON import/export for structured workflows
-- Offline heuristic fallback when API unavailable
-- Dark/light theme support
+#### v1.5.0 (2025-01-25)
+
+**AI Analysis**
+- AI-driven verdict generation using GPT-4o-mini
+- Contradiction detection between self-assessment scores and written responses
+- AI-adjusted scores displayed alongside user scores
+- Full Spanish language support for AI-generated content (rationale, contradictions)
+
+**UI/UX Improvements**
+- Orange branded logo in navigation header
+- Fixed question card width (640px) for consistent layout
+- Increased textarea height for better input experience
+- Dark/light theme toggle
 - Mobile-responsive design
+
+**Infrastructure**
+- Downgraded to Next.js 15.5.9 for Windows stability
+- Netlify deployment configuration
+- Offline heuristic fallback when API unavailable
+
+**Schema & Templates**
+- Updated INPUT_TEMPLATE.json to v2.0 schema
+- Synced download template with v2.0 format
+- Removed user-selected verdict (AI now generates)
+- Added `biggest_unresolved_risk` to self-reflection
+
+**Documentation**
+- Rebranded from "Kill Test" to "AI Idea Validator"
+- Added .env.example for configuration
+- Added PORTFOLIO.md for project showcase
 
 ---
 
