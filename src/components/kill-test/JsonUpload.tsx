@@ -222,12 +222,14 @@ const JSON_TEMPLATE = `{
     "enum_fields": "Fields showing 'option1 | option2' are enums - choose exactly one value",
     "note": "AI generates the final verdict based on your responses. Be brutally honest."
   },
+
   "meta": {
     "schema_version": "2.0",
     "language": "en",
     "created_with": "human",
     "confidence_level": "medium"
   },
+
   "idea_definition": {
     "one_liner": "",
     "problem_statement": "",
@@ -235,6 +237,7 @@ const JSON_TEMPLATE = `{
     "who_feels_pain_most": "",
     "what_disappears_if_product_dies": ""
   },
+
   "customer": {
     "primary_payer": {
       "role": "",
@@ -250,6 +253,7 @@ const JSON_TEMPLATE = `{
       "why_it_sucks": ""
     }
   },
+
   "core_workflow": {
     "event": "",
     "decision": "",
@@ -257,6 +261,7 @@ const JSON_TEMPLATE = `{
     "frequency": "daily | weekly | monthly | ad_hoc",
     "criticality": "low | medium | high"
   },
+
   "value_and_money": {
     "value_proposition": "",
     "value_type": "revenue_gain | cost_reduction | risk_avoidance | convenience",
@@ -264,6 +269,7 @@ const JSON_TEMPLATE = `{
     "pricing_anchor": "usage | subscription | outcome | contract",
     "estimated_willingness_to_pay": ""
   },
+
   "platform_and_dependencies": {
     "core_platforms": [],
     "dependency_severity": {
@@ -273,11 +279,13 @@ const JSON_TEMPLATE = `{
     },
     "single_point_of_failure": ""
   },
+
   "defensibility_analysis": {
     "why_this_is_hard_to_copy": "",
     "what_looks_like_a_moat_but_isnt": "",
     "time_based_advantages": ""
   },
+
   "data_and_learning": {
     "data_collected": [],
     "data_type": "behavioral | transactional | outcome | none",
@@ -285,6 +293,7 @@ const JSON_TEMPLATE = `{
     "learning_loops": "",
     "does_data_compound": "yes | somewhat | no"
   },
+
   "risks_and_failure": {
     "primary_failure_mode": "",
     "secondary_failure_modes": [],
@@ -292,6 +301,7 @@ const JSON_TEMPLATE = `{
     "competitive_risk_description": "",
     "founder_risk_description": ""
   },
+
   "scoring": {
     "_note": "All scores use 1-10 scale. Higher = greater risk or strength depending on field. AI will compare these against your written responses.",
     "copycat_risk": null,
@@ -299,11 +309,13 @@ const JSON_TEMPLATE = `{
     "lock_in_strength": null,
     "pricing_power": null
   },
+
   "assumptions": {
     "most_critical_assumptions": [],
     "least_certain_assumptions": [],
     "assumptions_not_yet_tested": []
   },
+
   "self_reflection": {
     "emotional_attachment_level": 1,
     "would_i_fund_this_if_not_my_idea": "yes | no | unsure",
