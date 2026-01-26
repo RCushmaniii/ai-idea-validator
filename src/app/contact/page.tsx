@@ -101,24 +101,22 @@ export default function ContactPage() {
     setError(false);
 
     try {
+      const formData = new FormData();
+      formData.append('name', formState.name);
+      formData.append('email', formState.email);
+      formData.append('subject', formState.subject);
+      formData.append('message', formState.message);
+      formData.append('_subject', `AI Idea Validator: ${formState.subject}`);
+      formData.append('_template', 'table');
+      formData.append('source', 'AI Idea Validator - Contact Page');
+      formData.append('language', language.toUpperCase());
+
       const response = await fetch(FORMSPREE_ENDPOINT, {
         method: 'POST',
+        body: formData,
         headers: {
-          'Content-Type': 'application/json',
           'Accept': 'application/json',
         },
-        body: JSON.stringify({
-          // Human-readable field names for email
-          'Name': formState.name,
-          'Email': formState.email,
-          'Subject': formState.subject,
-          'Message': formState.message,
-          // Formspree special fields
-          '_subject': `AI Idea Validator Contact: ${formState.subject}`,
-          '_template': 'table',
-          'Source': 'AI Idea Validator - Contact Page',
-          'Language': language.toUpperCase(),
-        }),
       });
 
       if (response.ok) {
