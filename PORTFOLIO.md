@@ -8,7 +8,8 @@ priority: 1
 title: "AI Idea Validator"
 tagline: "Brutal startup defensibility assessment powered by AI"
 category: "AI Automation"
-tech_stack: ["Next.js 15", "React 19", "TypeScript", "OpenAI API", "Tailwind CSS 4"]
+tech_stack:
+  ["Next.js 15", "React 19", "TypeScript", "OpenAI API", "Tailwind CSS 4"]
 thumbnail: "/portfolio/ai-idea-validator.png"
 status: "Production"
 
@@ -25,9 +26,9 @@ key_features:
   - "Offline fallback with heuristic analysis when API unavailable"
 
 # Links
-demo_url: ""
+demo_url: "https://ai-idea-validator.netlify.app/"
 repo_url: "https://github.com/RCushmaniii/ai-idea-validator"
-live_url: ""
+live_url: "https://ai-idea-validator.netlify.app/"
 
 # Optional metrics
 metrics:
