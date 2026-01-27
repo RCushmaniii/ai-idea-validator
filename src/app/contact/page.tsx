@@ -13,6 +13,7 @@ export default function ContactPage() {
     email: '',
     subject: '',
     message: '',
+    _gotcha: '', // Honeypot field - bots fill this, humans don't see it
   });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -101,6 +102,12 @@ export default function ContactPage() {
     setError(false);
 
     try {
+      // Check honeypot - if filled, it's a bot
+      if (formState._gotcha) {
+        setSubmitted(true); // Fake success to confuse bots
+        return;
+      }
+
       const formData = new FormData();
       formData.append('name', formState.name);
       formData.append('email', formState.email);
@@ -108,6 +115,7 @@ export default function ContactPage() {
       formData.append('message', formState.message);
       formData.append('_subject', `AI Idea Validator: ${formState.subject}`);
       formData.append('_template', 'table');
+      formData.append('_gotcha', ''); // Formspree honeypot - must be empty
       formData.append('source', 'AI Idea Validator - Contact Page');
       formData.append('language', language.toUpperCase());
 
@@ -179,7 +187,7 @@ export default function ContactPage() {
             <button
               onClick={() => {
                 setSubmitted(false);
-                setFormState({ name: '', email: '', subject: '', message: '' });
+                setFormState({ name: '', email: '', subject: '', message: '', _gotcha: '' });
               }}
               className="mt-6 inline-flex items-center rounded-md border border-neutral-300 bg-white px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700"
             >
@@ -189,6 +197,17 @@ export default function ContactPage() {
         ) : (
           /* Contact Form */
           <form onSubmit={handleSubmit} className="mt-12 space-y-6">
+            {/* Honeypot field - hidden from humans, bots fill it */}
+            <input
+              type="text"
+              name="_gotcha"
+              value={formState._gotcha}
+              onChange={handleChange}
+              style={{ display: 'none' }}
+              tabIndex={-1}
+              autoComplete="off"
+            />
+
             <div className="grid gap-6 sm:grid-cols-2">
               <div>
                 <label htmlFor="name" className="block text-sm font-medium text-neutral-900 dark:text-white">
