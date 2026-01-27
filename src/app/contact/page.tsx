@@ -104,7 +104,7 @@ export default function ContactPage() {
       const formData = new FormData();
       formData.append('name', formState.name);
       formData.append('email', formState.email);
-      formData.append('subject', formState.subject);
+      formData.append('regarding', formState.subject);  // Renamed from 'subject' to avoid conflict with _subject
       formData.append('message', formState.message);
       formData.append('_subject', `AI Idea Validator: ${formState.subject}`);
       formData.append('_template', 'table');
