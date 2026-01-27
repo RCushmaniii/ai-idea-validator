@@ -214,9 +214,18 @@ Read the full [Privacy Policy](https://ai-idea-validator.netlify.app/privacy).
 
 ## Version
 
-**v2.0.0** (2025-01-26)
+**v2.5.0** (2025-01-27)
 
 ### Changelog
+
+**v2.5.0 - Support & Contact**
+- New Support hub page with links to Documentation, FAQ, and Contact
+- Documentation page with Getting Started guide and JSON/AI workflow instructions
+- FAQ page with categorized accordion questions
+- Contact form with Formspree integration
+- Honeypot spam protection on contact form
+- Updated navigation: removed Home, added Support
+- Full bilingual (EN/ES) support for all new pages
 
 **v2.0.0 - Trust Edition**
 - New TrustBadges section on homepage with 4 privacy guarantees
