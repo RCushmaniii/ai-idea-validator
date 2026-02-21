@@ -23,12 +23,17 @@ tags:
   - "contradiction-detection"
   - "bilingual"
 
-thumbnail: "/portfolio/ai-idea-validator.png"
+thumbnail: "/images/portfolio/aI-Idea-validator-thumb.jpg"
 hero_images:
-  - "/portfolio/ai-idea-validator-hero-01.png"
-  - "/portfolio/ai-idea-validator-hero-02.png"
-  - "/portfolio/ai-idea-validator-hero-03.png"
-demo_video_url: ""
+  - "/images/portfolio/aI-Idea-validator-01.png"
+  - "/images/portfolio/aI-Idea-validator-02.png"
+  - "/images/portfolio/aI-Idea-validator-03.png"
+  - "/images/portfolio/aI-Idea-validator-04.png"
+  - "/images/portfolio/aI-Idea-validator-05.png"
+  - "/images/portfolio/aI-Idea-validator-06.png"
+  - "/images/portfolio/aI-Idea-validator-07.png"
+demo_video_url: "/video/aI-Idea-validator-brief.mp4"
+video_poster: "/video/aI-Idea-validator-brief-poster.jpg"
 
 live_url: "https://ai-idea-validator.netlify.app/"
 demo_url: "https://ai-idea-validator.netlify.app/"
