@@ -203,6 +203,82 @@ These are defensibility questions. They're the questions that determine whether 
 
 **Business impact:** Founders with sensitive ideas — particularly those in stealth mode or under NDA — can use the tool without the IP exposure risk that comes with most SaaS platforms. The privacy architecture isn't a policy. It's a technical constraint. There's no data to breach because there's no data stored.
 
+## Two Perspectives, One Tool: Founder vs Solopreneur
+
+The AI Idea Validator serves both founders and solopreneurs — but the value it delivers to each is fundamentally different, because the risks they face are different, the resources they're protecting are different, and the decisions the verdict informs are different.
+
+### For the Startup Founder
+
+A startup founder is building to scale. They're raising capital, hiring a team, pursuing a market that justifies venture-level returns. The stakes are measured in other people's money, team members' career bets, and a timeline that assumes growth or death.
+
+**The founder's core risk: attracting competition they can't survive.**
+
+A startup that validates demand and gains traction has done something valuable — but traction is a signal that competitors can read too. The moment the market notices your success, the question shifts from "can you build it?" to "can you defend it?" If the answer is no, the founder has spent their investors' capital and their team's time proving a market that someone else will capture.
+
+**How each feature serves the founder differently:**
+
+**Contradiction detection is your investor-readiness check.** The contradictions the AI surfaces are exactly the gaps a sharp investor will probe during due diligence. If you rate your competitive moat 8/10 but describe a product with no switching costs, the AI catches that before a VC partner does — in a setting that costs you nothing except 20 minutes, rather than a burned investor relationship and a reputation hit in a tight-knit funding community. Every contradiction you resolve before your pitch deck goes out is one less question that derails a fundraising conversation.
+
+**The KILL verdict saves you from the sunk-cost spiral.** Founders with teams, investors, and public commitments face enormous pressure to continue even when the structural evidence says stop. The social cost of killing a funded venture is high. But the financial cost of continuing one that's structurally indefensible is higher. A KILL verdict from an emotionally uninvested AI provides external validation for the decision that everyone on the inside is too committed to make. It's not the founder quitting — it's the analysis saying the foundation won't hold.
+
+**The FLIP verdict is where the real fundraising story lives.** For a founder whose idea has potential but structural vulnerability, the FLIP verdict identifies specific pivots that transform the defensibility profile. "Your core insight is valid but your current approach has no switching costs — here's why" is the starting point for a pivot that turns a vulnerable idea into a fundable one. Investors don't fund ideas; they fund defensible positions. The FLIP verdict tells you how to get from one to the other.
+
+**Bilingual support opens LATAM fundraising conversations.** Latin American venture capital is growing fast. A Mexican founder pitching to LATAM-focused funds can run the assessment in Spanish, capture the full nuance of their market description, and use the AI's Spanish-language analysis as supporting material in Spanish-language pitch decks. The assessment meets the founder where their thinking happens, not where English-language tools force it.
+
+**The 23-question structure is your board-ready defensibility framework.** When a board member or advisor asks "how do you think about defensibility?" you have a structured answer across four dimensions with documented scoring and AI-validated analysis. That's not a gut feeling — it's a framework. Founders who can articulate their defensibility thesis in structured terms signal a level of strategic maturity that distinguishes them from the "we'll figure out the moat later" majority.
+
+**JSON export creates a defensibility audit trail.** Export your assessment, store it, and re-run it quarterly. Track how your defensibility profile changes as you build. Show investors the trajectory: "Six months ago our lock-in score was 4/10. Here's what we built, and now it's 7/10." That's a narrative backed by data, not a claim backed by confidence.
+
+**Privacy protects stealth-mode IP.** Pre-launch founders operating in stealth can't afford their idea thesis leaking through a SaaS platform's database. The zero-storage architecture means the assessment exists in your browser session and nowhere else. No account, no record, no breach risk. Your stealth stays stealth.
+
+---
+
+### For the Solopreneur
+
+A solopreneur is building to sustain. They're self-funded, operating alone (or with minimal help), and every resource — time, money, energy — comes from a single source: themselves. There's no investor cushion. There's no team to absorb a bad quarter. There's no pivot budget. If the idea doesn't work, the solopreneur absorbs the full cost personally.
+
+**The solopreneur's core risk: spending their most irreplaceable resource on the wrong thing.**
+
+A startup founder who kills a bad idea can raise another round, assemble another team, and try again — often within months. A solopreneur who spends 12 months building the wrong thing has spent 12 months of their life, savings, and opportunity cost. There's no Series A to absorb the loss. The recovery timeline is measured in years, not quarters.
+
+**How each feature serves the solopreneur differently:**
+
+**Contradiction detection is your reality check when you have no team to push back.** Founders in teams benefit from co-founders who challenge assumptions, advisors who ask hard questions, and investors whose due diligence stress-tests the thesis. Solopreneurs have none of that. Every decision goes through one brain — the same brain that's generating the optimism bias. The AI's contradiction detection provides the adversarial perspective that a team would normally supply. When it flags that your written description contradicts your numeric score, it's doing the job of the co-founder you don't have: telling you something you don't want to hear, with evidence.
+
+**The KILL verdict is the most valuable thing a solopreneur can receive.** For a startup founder, a KILL verdict is painful but recoverable. For a solopreneur, it's a gift. It means: don't spend the next 12 months of your evenings and weekends building this. Don't drain your savings account. Don't sacrifice your relationships, your health, and your other opportunities on an idea that has a structural flaw in its foundation. The KILL verdict doesn't mean you're not capable. It means this particular idea can't be defended — and your time, which you can never get back, deserves to be spent on one that can.
+
+**The BUILD verdict comes with specific moat instructions — critical when you can't afford to build the wrong moat.** A funded startup can experiment with moat strategies: try network effects, test pricing power, explore data advantages, iterate on switching costs. A solopreneur gets one shot. The BUILD verdict's detailed rationale identifies which moats are available for YOUR specific idea and which ones to invest in. That specificity prevents the solopreneur from spending their limited time building a moat that doesn't apply to their situation.
+
+**The BET verdict is permission to proceed with eyes open.** Solopreneurs often know their idea is risky but feel guilty about pursuing it because they can't articulate why the risk is justified. The BET verdict says: "Yes, this is high risk. But here's why the asymmetric upside justifies the gamble, and here are the specific conditions under which you should reassess." That's a structured framework for risk acceptance — something solopreneurs rarely get. It's the difference between "I hope this works" and "I know the risks, I know why I'm taking them, and I know when to walk away."
+
+**The 20-minute time investment matches the solopreneur's constraint.** A startup founder can spend a week on strategic planning. A solopreneur is also the developer, the marketer, the accountant, the customer support, and the operations team. Twenty minutes to get a structured defensibility assessment is proportional to the solopreneur's available planning time. The tool respects the constraint by delivering maximum insight per minute invested.
+
+**Offline fallback means no dependency, no subscription, no recurring cost.** Solopreneurs are allergic to SaaS subscriptions — not because they're cheap, but because every $12/month adds up when you're pre-revenue. The tool works without an API key (heuristic mode), without an account, and without a subscription. The full AI analysis is available when you want it, but the baseline assessment is always free, always available.
+
+**Privacy matters more when the idea IS the business.** A startup founder's idea is one component of a larger enterprise — there's a team, a brand, existing customers, relationships. A solopreneur's idea often IS the entire business. If the idea leaks, there's no organizational moat to fall back on. The zero-storage architecture means the solopreneur's most valuable asset — the idea itself — never exists in anyone else's database.
+
+---
+
+### The Core Difference, Summarized
+
+| Dimension | Startup Founder | Solopreneur |
+|-----------|----------------|-------------|
+| **What they're protecting** | Investor capital + team time | Their own time + savings — irreplaceable |
+| **Recovery from a bad bet** | Raise another round, reassemble (months) | Personal financial recovery (years) |
+| **Who challenges their thinking** | Co-founders, advisors, investors, board | Nobody — that's the problem |
+| **Value of KILL verdict** | Saves investor money, preserves reputation | Saves 12+ months of life + personal savings |
+| **Value of FLIP verdict** | Reshapes the fundraising narrative | Redirects limited effort to a defensible path |
+| **Value of BUILD verdict** | Board-ready defensibility framework | Specific moat instructions for a single operator |
+| **Value of BET verdict** | Structured risk thesis for investors | Permission to proceed with defined exit criteria |
+| **Contradiction detection** | Investor-readiness check | Replaces the co-founder they don't have |
+| **Bilingual value** | Opens LATAM fundraising conversations | Lets LATAM solopreneurs think in their language |
+| **JSON export** | Quarterly defensibility audit for board | Personal progress tracking over time |
+| **Privacy** | Stealth-mode IP protection | Protects the asset that IS the business |
+| **Time investment** | Part of a larger strategic planning cycle | Proportional to the only planning time available |
+| **Cost sensitivity** | Minor (funded or seeking funding) | Critical (pre-revenue, self-funded) |
+
+The tool is the same. The questions are the same. The AI analysis is the same. But the verdict lands differently when it's your savings on the line versus someone else's investment. For founders, the tool is strategic preparation. For solopreneurs, it's financial self-defense.
+
 ## Why Business Owners and Managers Love This Tool
 
 ### It Replaces Months of Expensive Discovery with 20 Minutes of Honest Assessment
