@@ -2,6 +2,7 @@
   "name": "ai-idea-validator",
   "version": "2.5.0",
   "private": true,
+  "license": "SEE LICENSE IN LICENSE",
   "description": "A brutally honest defensibility assessment for founders. Run the AI Idea Validator to find out if your business idea can survive.",
   "scripts": {
     "dev": "next dev",
