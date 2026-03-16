@@ -73,7 +73,7 @@ export function Header() {
             <button
               onClick={() => setLanguage(language === 'en' ? 'es' : 'en')}
               className="rounded-md px-3 py-2 text-sm font-medium text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
-              aria-label={`Switch to ${language === 'en' ? 'Spanish' : 'English'}`}
+              aria-label={t.header.switchToLanguage}
             >
               {language === 'en' ? 'ES' : 'EN'}
             </button>
@@ -82,7 +82,7 @@ export function Header() {
             <button
               onClick={toggleTheme}
               className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
-              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+              aria-label={theme === 'light' ? t.header.switchToTheme : t.header.switchToLightTheme}
             >
               {theme === 'light' ? (
                 <svg
@@ -124,7 +124,7 @@ export function Header() {
             {/* Mobile Menu Button */}
             <button
               className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white md:hidden"
-              aria-label="Open menu"
+              aria-label={t.header.openMenu}
               onClick={() => setMobileMenuOpen(true)}
             >
               <svg
@@ -168,7 +168,7 @@ export function Header() {
           <button
             onClick={() => setMobileMenuOpen(false)}
             className="rounded-md p-2 text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white"
-            aria-label="Close menu"
+            aria-label={t.header.closeMenu}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -214,7 +214,7 @@ export function Header() {
             }}
             className="flex items-center justify-between rounded-lg px-4 py-3 text-base font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
-            <span>{language === 'en' ? 'Cambiar a Espanol' : 'Switch to English'}</span>
+            <span>{t.header.switchLanguageLabel}</span>
             <span className="rounded bg-neutral-200 px-2 py-0.5 text-xs font-semibold dark:bg-neutral-700">
               {language === 'en' ? 'ES' : 'EN'}
             </span>
@@ -228,7 +228,7 @@ export function Header() {
             }}
             className="flex items-center justify-between rounded-lg px-4 py-3 text-base font-medium text-neutral-700 transition-colors hover:bg-neutral-100 dark:text-neutral-300 dark:hover:bg-neutral-800"
           >
-            <span>{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+            <span>{theme === 'light' ? t.header.darkMode : t.header.lightMode}</span>
             {theme === 'light' ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"

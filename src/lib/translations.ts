@@ -13,6 +13,14 @@ export const translations = {
     // Header
     header: {
       logo: 'AI Idea Validator',
+      switchToLanguage: 'Switch to Spanish',
+      switchToTheme: 'Switch to dark mode',
+      switchToLightTheme: 'Switch to light mode',
+      darkMode: 'Dark Mode',
+      lightMode: 'Light Mode',
+      openMenu: 'Open menu',
+      closeMenu: 'Close menu',
+      switchLanguageLabel: 'Cambiar a Español',
     },
 
     // Footer
@@ -22,6 +30,15 @@ export const translations = {
       navigation: 'Navigation',
       builtFor: 'Built for founders who value their time.',
       copyright: '© 2025 AI Idea Validator. No rights reserved—ideas are free.',
+      documentation: 'Documentation',
+      faq: 'FAQ',
+      contact: 'Contact',
+      termsOfService: 'Terms of Service',
+      privacyPolicy: 'Privacy Policy',
+      resources: 'Resources',
+      jsonTemplate: 'JSON Template',
+      switchLanguage: 'Cambiar a Español',
+      legal: 'Legal',
     },
 
     // Homepage
@@ -426,112 +443,129 @@ export const translations = {
     // Header
     header: {
       logo: 'AI Idea Validator',
+      switchToLanguage: 'Cambiar a inglés',
+      switchToTheme: 'Cambiar a modo oscuro',
+      switchToLightTheme: 'Cambiar a modo claro',
+      darkMode: 'Modo Oscuro',
+      lightMode: 'Modo Claro',
+      openMenu: 'Abrir menú',
+      closeMenu: 'Cerrar menú',
+      switchLanguageLabel: 'Switch to English',
     },
 
     // Footer
     footer: {
       tagline: 'Saber antes de construir.',
-      description: 'Una evaluacion brutal y honesta para fundadores que se niegan a desperdiciar anos en ideas que nunca iban a funcionar.',
-      navigation: 'Navegacion',
+      description: 'Una evaluación brutal y honesta para fundadores que se niegan a desperdiciar años en ideas que nunca iban a funcionar.',
+      navigation: 'Navegación',
       builtFor: 'Hecho para fundadores que valoran su tiempo.',
       copyright: '© 2025 AI Idea Validator. Sin derechos reservados—las ideas son libres.',
+      documentation: 'Documentación',
+      faq: 'Preguntas Frecuentes',
+      contact: 'Contacto',
+      termsOfService: 'Términos de Servicio',
+      privacyPolicy: 'Política de Privacidad',
+      resources: 'Recursos',
+      jsonTemplate: 'Plantilla JSON',
+      switchLanguage: 'Switch to English',
+      legal: 'Legal',
     },
 
     // Homepage
     home: {
       hero: {
         title: '¿Tu idea es defendible?',
-        subtitle: 'Descubrelo antes de construir.',
-        description: 'La mayoria de las ideas de startup fracasan no porque sean malas, sino porque son reemplazables. Ejecuta el AI Idea Validator para descubrir si tu negocio puede sobrevivir a la competencia, cambios de plataforma y las brutales realidades de construir en solitario.',
+        subtitle: 'Descúbrelo antes de construir.',
+        description: 'La mayoría de las ideas de startup fracasan no porque sean malas, sino porque son reemplazables. Ejecuta el AI Idea Validator para descubrir si tu negocio puede sobrevivir a la competencia, cambios de plataforma y las brutales realidades de construir en solitario.',
         cta: 'Ejecutar el AI Idea Validator',
-        secondary: 'Aprende como funciona',
+        secondary: 'Aprende cómo funciona',
       },
       problem: {
-        title: 'La Verdad Incomoda',
-        subtitle: 'Por que la mayoria de las ideas fracasan',
+        title: 'La Verdad Incómoda',
+        subtitle: 'Por qué la mayoría de las ideas fracasan',
         points: [
           {
             title: 'Las funcionalidades no son fosos',
-            description: 'Cualquier cosa que construyas con APIs publicas puede clonarse en semanas. Tu funcion "con IA" esta a un prompt de ser un commodity.',
+            description: 'Cualquier cosa que construyas con APIs públicas puede clonarse en semanas. Tu función "con IA" está a un prompt de ser un commodity.',
           },
           {
             title: 'A las plataformas no les importas',
-            description: 'Un cambio de politica, un aumento de precio, una restriccion de API—y todo tu modelo de negocio se evapora de la noche a la manana.',
+            description: 'Un cambio de política, un aumento de precio, una restricción de API—y todo tu modelo de negocio se evapora de la noche a la mañana.',
           },
           {
             title: 'Ser bueno no es suficiente',
-            description: 'Tu producto puede ser tecnicamente excelente. Pero si los clientes pueden cambiar facilmente a un competidor o vivir sin ti, no tienes nada.',
+            description: 'Tu producto puede ser técnicamente excelente. Pero si los clientes pueden cambiar fácilmente a un competidor o vivir sin ti, no tienes nada.',
           },
         ],
       },
       whatItDoes: {
-        title: 'Que Hace el AI Idea Validator',
-        subtitle: 'Una Evaluacion Despiadada',
+        title: 'Qué Hace el AI Idea Validator',
+        subtitle: 'Una Evaluación Despiadada',
         points: [
           {
             title: 'Expone falsos fosos',
-            description: 'Identifica donde tus ventajas competitivas son en realidad ilusiones esperando ser destruidas.',
+            description: 'Identifica dónde tus ventajas competitivas son en realidad ilusiones esperando ser destruidas.',
           },
           {
             title: 'Prueba dependencia de plataformas',
-            description: 'Revela cuan vulnerable eres a cambios de plataformas que no controlas.',
+            description: 'Revela cuán vulnerable eres a cambios de plataformas que no controlas.',
           },
           {
-            title: 'Evalua supervivencia en solitario',
-            description: 'Determina si el negocio puede prosperar—o si se convertira silenciosamente en un trabajo 24/7.',
+            title: 'Evalúa supervivencia en solitario',
+            description: 'Determina si el negocio puede prosperar—o si se convertirá silenciosamente en un trabajo 24/7.',
           },
           {
             title: 'Mide costos de cambio',
-            description: 'Evalua si los clientes realmente sentirian dolor si se fueran.',
+            description: 'Evalúa si los clientes realmente sentirían dolor si se fueran.',
           },
           {
             title: 'Calcula riesgo asimetrico',
-            description: 'Sopesa el potencial alcista contra lo que realmente estas arriesgando.',
+            description: 'Sopesa el potencial alcista contra lo que realmente estás arriesgando.',
           },
         ],
       },
       whoItsFor: {
-        title: 'Para Quien Es',
+        title: 'Para Quién Es',
         subtitle: 'Solo Constructores Serios',
         personas: [
           {
             title: 'Fundadores en Solitario',
-            description: 'Estas apostando tu tiempo y cordura en una idea. Asegurate de que valga la pena antes de ir con todo.',
+            description: 'Estás apostando tu tiempo y cordura en una idea. Asegúrate de que valga la pena antes de ir con todo.',
           },
           {
             title: 'Freelancers',
-            description: '¿Pensando en productizar tus servicios? Sabe si se convertira en un negocio o solo mas trabajo de cliente disfrazado.',
+            description: '¿Pensando en productizar tus servicios? Sabe si se convertirá en un negocio o solo más trabajo de cliente disfrazado.',
           },
           {
             title: 'Indie Hackers',
-            description: 'Lanza rapido, pero lanza inteligente. No construyas algo que un proyecto de fin de semana podria reemplazar.',
+            description: 'Lanza rápido, pero lanza inteligente. No construyas algo que un proyecto de fin de semana podría reemplazar.',
           },
         ],
       },
       howItWorks: {
-        title: 'Como Funciona',
+        title: 'Cómo Funciona',
         subtitle: 'Cinco Minutos Hacia la Claridad',
         steps: [
           {
             number: '01',
             title: 'Describe tu idea',
-            description: 'Cuentanos que estas construyendo, quien paga y que sucede cuando funciona.',
+            description: 'Cuéntanos qué estás construyendo, quién paga y qué sucede cuando funciona.',
           },
           {
             number: '02',
-            title: 'Enfrenta las preguntas dificiles',
-            description: 'Responde 24 preguntas disenadas para exponer debilidades en defendibilidad, riesgo de plataforma y escalamiento.',
+            title: 'Enfrenta las preguntas difíciles',
+            description: 'Responde 24 preguntas diseñadas para exponer debilidades en defendibilidad, riesgo de plataforma y escalamiento.',
           },
           {
             number: '03',
-            title: 'Obten tu veredicto',
-            description: 'Recibe una recomendacion clara: Kill, Flip, Build, o Bet—con riesgos especificos destacados.',
+            title: 'Obtén tu veredicto',
+            description: 'Recibe una recomendación clara: Kill, Flip, Build, o Bet—con riesgos específicos destacados.',
           },
         ],
       },
       cta: {
         title: '¿Listo para descubrirlo?',
-        description: 'Deja de adivinar. Deja de esperar. Obten una respuesta clara sobre si tu idea tiene lo que se necesita.',
+        description: 'Deja de adivinar. Deja de esperar. Obtén una respuesta clara sobre si tu idea tiene lo que se necesita.',
         button: 'Comenzar el AI Idea Validator',
         note: 'Toma unos 5-10 minutos. No requiere registro.',
       },
@@ -548,49 +582,49 @@ export const translations = {
             description: 'Tus respuestas se procesan localmente. Nada se guarda en nuestros servidores.',
           },
           {
-            title: 'Codigo Abierto',
-            description: 'Verifica nuestras afirmaciones. Transparencia total del codigo en GitHub.',
+            title: 'Código Abierto',
+            description: 'Verifica nuestras afirmaciones. Transparencia total del código en GitHub.',
           },
           {
-            title: 'Datos Solo en Sesion',
+            title: 'Datos Solo en Sesión',
             description: 'Cierra tu navegador, los datos desaparecen. Sin almacenamiento persistente.',
           },
         ],
-        privacyLink: 'Lee nuestra politica de privacidad completa',
-        githubLink: 'Ver codigo fuente',
+        privacyLink: 'Lee nuestra política de privacidad completa',
+        githubLink: 'Ver código fuente',
       },
     },
 
     // About page
     about: {
       title: 'Acerca de AI Idea Validator',
-      subtitle: 'Por Que Existe Esto',
-      intro: 'AI Idea Validator fue creado porque demasiados fundadores desperdician anos en ideas que nunca iban a funcionar—no porque las ideas fueran malas, sino porque eran fundamentalmente reemplazables.',
+      subtitle: 'Por Qué Existe Esto',
+      intro: 'AI Idea Validator fue creado porque demasiados fundadores desperdician años en ideas que nunca iban a funcionar—no porque las ideas fueran malas, sino porque eran fundamentalmente reemplazables.',
       sections: [
         {
           title: 'El Problema Que Resolvemos',
-          content: 'La mayoria de los consejos para startups se enfocan en la ejecucion: lanza rapido, habla con clientes, itera. Todo eso es verdad. Pero nada de eso importa si tu idea carece de defendibilidad estructural. Puedes ejecutar perfectamente una idea sin foso—y aun asi fracasar.',
+          content: 'La mayoría de los consejos para startups se enfocan en la ejecución: lanza rápido, habla con clientes, itera. Todo eso es verdad. Pero nada de eso importa si tu idea carece de defendibilidad estructural. Puedes ejecutar perfectamente una idea sin foso—y aún así fracasar.',
         },
         {
-          title: 'Que Nos Hace Diferentes',
-          content: 'Esto no es una herramienta de brainstorming o un validador de ideas que te dice lo que quieres escuchar. Es un filtro. Una evaluacion hostil y racional que asume que los competidores tienen las mismas herramientas que tu, las plataformas cambian reglas cuando les conviene, y los clientes son perezosos y reacios al riesgo.',
+          title: 'Qué Nos Hace Diferentes',
+          content: 'Esto no es una herramienta de brainstorming o un validador de ideas que te dice lo que quieres escuchar. Es un filtro. Una evaluación hostil y racional que asume que los competidores tienen las mismas herramientas que tú, las plataformas cambian reglas cuando les conviene, y los clientes son perezosos y reacios al riesgo.',
         },
         {
-          title: 'Como Evaluamos',
-          content: 'El AI Idea Validator ejecuta tu idea a traves de 24 preguntas cuidadosamente disenadas que cubren defendibilidad, velocidad de copia, dependencia de plataformas, fosos de datos, lock-in de flujo de trabajo, poder de precios, sostenibilidad de fundador solo y modos de fallo.',
+          title: 'Cómo Evaluamos',
+          content: 'El AI Idea Validator ejecuta tu idea a través de 24 preguntas cuidadosamente diseñadas que cubren defendibilidad, velocidad de copia, dependencia de plataformas, fosos de datos, lock-in de flujo de trabajo, poder de precios, sostenibilidad de fundador solo y modos de fallo.',
         },
         {
           title: 'Los Resultados',
-          content: 'Cada idea recibe uno de cuatro veredictos: KILL (fundamentalmente debil), FLIP (requiere pivote), BUILD (defendible con disciplina), o BET (arriesgado pero con potencial asimetrico). Sin puntos medios. Sin "depende". Una respuesta clara.',
+          content: 'Cada idea recibe uno de cuatro veredictos: KILL (fundamentalmente débil), FLIP (requiere pivote), BUILD (defendible con disciplina), o BET (arriesgado pero con potencial asimétrico). Sin puntos medios. Sin "depende". Una respuesta clara.',
         },
       ],
       philosophy: {
-        title: 'Nuestra Filosofia',
+        title: 'Nuestra Filosofía',
         points: [
-          'Matar una idea temprano es exito, no fracaso.',
+          'Matar una idea temprano es éxito, no fracaso.',
           'Si una idea pasa dos veces, probablemente es real.',
-          'Negarse a responder honestamente significa que la idea ya fracaso.',
-          'La mayoria de los productos fracasados eran tecnicamente correctos—fracasaron porque eran reemplazables.',
+          'Negarse a responder honestamente significa que la idea ya fracasó.',
+          'La mayoría de los productos fracasados eran técnicamente correctos—fracasaron porque eran reemplazables.',
         ],
       },
       cta: {
@@ -602,22 +636,22 @@ export const translations = {
     // AI Idea Validator
     killTest: {
       title: 'AI Idea Validator de Defendibilidad',
-      subtitle: 'Edicion de Grado Fundador, Sin Piedad',
+      subtitle: 'Edición de Grado Fundador, Sin Piedad',
       intro: {
         title: 'Antes de Comenzar',
-        description: 'Esta evaluacion combina las perspectivas de un PM de plataforma (que sabe como las funciones se comoditizan), un operador fundador en solitario (que sabe que se rompe a las 2 a.m.), y un comprador que controla un presupuesto y odia cambiar de herramientas.',
-        warning: 'Se honesto. Las respuestas optimistas solo te perjudican.',
+        description: 'Esta evaluación combina las perspectivas de un PM de plataforma (que sabe cómo las funciones se comoditizan), un operador fundador en solitario (que sabe qué se rompe a las 2 a.m.), y un comprador que controla un presupuesto y odia cambiar de herramientas.',
+        warning: 'Sé honesto. Las respuestas optimistas solo te perjudican.',
         start: 'Comenzar el Test',
       },
       progress: 'Paso {current} de {total}',
       navigation: {
-        back: 'Atras',
+        back: 'Atrás',
         next: 'Siguiente',
         submit: 'Ver Resultados',
       },
       sections: {
         setup: {
-          title: 'Configuracion',
+          title: 'Configuración',
           subtitle: 'Define tu idea',
         },
         killTest: {
@@ -625,138 +659,138 @@ export const translations = {
           subtitle: 'Honestidad brutal requerida',
         },
         scoring: {
-          title: 'Puntuaciones Rapidas',
-          subtitle: 'Evaluacion instintiva',
+          title: 'Puntuaciones Rápidas',
+          subtitle: 'Evaluación instintiva',
         },
         reflection: {
-          title: 'Reflexion Final',
-          subtitle: 'Una ultima cosa',
+          title: 'Reflexión Final',
+          subtitle: 'Una última cosa',
         },
       },
       questions: {
         // Setup questions
         ideaDefinition: {
-          label: 'En una sola frase, ¿cual es la idea de negocio que estas evaluando?',
+          label: 'En una sola frase, ¿cuál es la idea de negocio que estás evaluando?',
           placeholder: 'Describe tu idea de forma clara y concisa...',
         },
         targetCustomer: {
-          label: '¿Quien es el cliente principal?',
-          subLabel: '¿Quien paga? ¿Quien lo usa? Se especifico.',
-          placeholder: 'Describe quien paga y quien usa el producto...',
+          label: '¿Quién es el cliente principal?',
+          subLabel: '¿Quién paga? ¿Quién lo usa? Sé específico.',
+          placeholder: 'Describe quién paga y quién usa el producto...',
         },
         coreWorkflow: {
           label: 'Describe el flujo de trabajo principal',
-          subLabel: 'Evento → Decision → Accion',
-          placeholder: '¿Que dispara el uso? ¿Que decision se toma? ¿Que accion resulta?',
+          subLabel: 'Evento → Decisión → Acción',
+          placeholder: '¿Qué dispara el uso? ¿Qué decisión se toma? ¿Qué acción resulta?',
         },
         monetization: {
-          label: '¿Como genera dinero este producto?',
-          placeholder: 'Suscripcion, basado en uso, unico, freemium...',
+          label: '¿Cómo genera dinero este producto?',
+          placeholder: 'Suscripción, basado en uso, único, freemium...',
         },
         platformDependencies: {
-          label: '¿De que plataformas, APIs o ecosistemas depende?',
+          label: '¿De qué plataformas, APIs o ecosistemas depende?',
           placeholder: 'OpenAI, Stripe, Shopify, WhatsApp, etc...',
         },
         disappearanceTest: {
-          label: 'Si este producto desapareciera manana, ¿que dejaria de funcionar para el cliente?',
-          placeholder: 'Se honesto sobre el impacto real...',
+          label: 'Si este producto desapareciera mañana, ¿qué dejaría de funcionar para el cliente?',
+          placeholder: 'Sé honesto sobre el impacto real...',
         },
 
         // AI Idea Validator questions
         inevitabilityTest: {
-          label: '¿Por que no existe ya una solucion dominante para esto?',
-          placeholder: '¿Que brecha de mercado existe y por que no se ha llenado?',
+          label: '¿Por qué no existe ya una solución dominante para esto?',
+          placeholder: '¿Qué brecha de mercado existe y por qué no se ha llenado?',
         },
         copycatVelocity: {
-          label: '¿Que tan rapido podria un competidor competente llegar a "suficientemente bueno"?',
+          label: '¿Qué tan rápido podría un competidor competente llegar a "suficientemente bueno"?',
           options: {
-            under30: '< 30 dias',
-            '30to60': '30-60 dias',
-            '60to90': '60-90 dias',
+            under30: '< 30 días',
+            '30to60': '30-60 días',
+            '60to90': '60-90 días',
             over6months: '6+ meses',
           },
         },
         aiCommoditization: {
-          label: 'Si la IA se vuelve mas barata y mejor en todos lados, ¿que sigue siendo valioso aqui?',
-          placeholder: '¿Que parte de tu negocio no puede ser reemplazada por mejor IA?',
+          label: 'Si la IA se vuelve más barata y mejor en todos lados, ¿qué sigue siendo valioso aquí?',
+          placeholder: '¿Qué parte de tu negocio no puede ser reemplazada por mejor IA?',
         },
         platformHostageRisk: {
-          label: '¿Que cambio de plataforma unico podria danar gravemente o matar este negocio?',
-          placeholder: 'Precios de API, cambios de politica, absorcion de features...',
+          label: '¿Qué cambio de plataforma único podría dañar gravemente o matar este negocio?',
+          placeholder: 'Precios de API, cambios de política, absorción de features...',
         },
         dataMoatReality: {
-          label: '¿Que datos propietarios acumula esto con el tiempo?',
+          label: '¿Qué datos propietarios acumula esto con el tiempo?',
           placeholder: 'Datos de comportamiento, historial de transacciones, resultados...',
         },
         dataCompounding: {
-          label: '¿Estos datos se acumulan y se vuelven mas dificiles de replicar con el tiempo?',
+          label: '¿Estos datos se acumulan y se vuelven más difíciles de replicar con el tiempo?',
           options: {
-            yesStrongly: 'Si, fuertemente',
+            yesStrongly: 'Sí, fuertemente',
             somewhat: 'Algo',
             no: 'No',
           },
         },
         workflowLockIn: {
-          label: '¿Que tan doloroso seria para un cliente dejar de usar esto?',
+          label: '¿Qué tan doloroso sería para un cliente dejar de usar esto?',
           scaleMin: 'Pura conveniencia',
           scaleMax: 'El negocio se rompe',
         },
         pricingPower: {
-          label: '¿Podrias duplicar el precio sin una fuga masiva de clientes?',
+          label: '¿Podrías duplicar el precio sin una fuga masiva de clientes?',
           options: {
-            yes: 'Si',
+            yes: 'Sí',
             maybe: 'Tal vez',
             no: 'No',
           },
         },
         budgetOwner: {
-          label: '¿Quien controla el presupuesto para esta compra?',
-          placeholder: 'Titulo del puesto, relacion con el usuario, tipo de presupuesto...',
+          label: '¿Quién controla el presupuesto para esta compra?',
+          placeholder: 'Título del puesto, relación con el usuario, tipo de presupuesto...',
         },
         soloFounderRisk: {
-          label: '¿Que parte de esto podria convertirse silenciosamente en trabajo humano constante?',
-          placeholder: 'Personalizacion, soporte, ventas, casos edge...',
+          label: '¿Qué parte de esto podría convertirse silenciosamente en trabajo humano constante?',
+          placeholder: 'Personalización, soporte, ventas, casos edge...',
         },
         scalingStress: {
-          label: '¿Que se rompe primero al escalar 10×?',
+          label: '¿Qué se rompe primero al escalar 10×?',
           placeholder: 'Soporte, infraestructura, calidad, tu cordura...',
         },
         likelyFailureMode: {
-          label: '¿Cual es la forma mas probable en que este negocio fracase?',
+          label: '¿Cuál es la forma más probable en que este negocio fracase?',
           placeholder: 'Ban de plataforma, competidor lo regala, churn, burnout...',
         },
 
         // Scoring questions
         copycatRiskScore: {
-          label: '¿Que tan facil es de copiar?',
-          scaleMin: 'Muy dificil',
+          label: '¿Qué tan fácil es de copiar?',
+          scaleMin: 'Muy difícil',
           scaleMax: 'Trivial',
         },
         platformRiskScore: {
-          label: '¿Que tan expuesto esta a cambios de plataforma?',
-          scaleMin: 'Minimo',
-          scaleMax: 'Rehen',
+          label: '¿Qué tan expuesto está a cambios de plataforma?',
+          scaleMin: 'Mínimo',
+          scaleMax: 'Rehén',
         },
         lockInStrengthScore: {
-          label: '¿Que tan fuerte es el lock-in del cliente?',
+          label: '¿Qué tan fuerte es el lock-in del cliente?',
           scaleMin: 'Ninguno',
           scaleMax: 'Muy fuerte',
         },
         pricingPowerScore: {
-          label: '¿Que tan fuerte es el poder de precios?',
+          label: '¿Qué tan fuerte es el poder de precios?',
           scaleMin: 'Sensible al precio',
           scaleMax: 'Premium OK',
         },
 
         // Final reflection question (AI generates verdict)
         biggestUnresolvedRisk: {
-          label: '¿Cual es el mayor riesgo o preocupacion no resuelta que tienes sobre esta idea?',
-          subLabel: 'Se brutalmente honesto. La IA considerara esto en su analisis.',
-          placeholder: 'El elefante en la habitacion que te quita el sueno...',
+          label: '¿Cuál es el mayor riesgo o preocupación no resuelta que tienes sobre esta idea?',
+          subLabel: 'Sé brutalmente honesto. La IA considerará esto en su análisis.',
+          placeholder: 'El elefante en la habitación que te quita el sueño...',
         },
       },
       helper: {
-        button: '¿Que significa esto?',
+        button: '¿Qué significa esto?',
         close: 'Entendido',
       },
     },
@@ -768,22 +802,22 @@ export const translations = {
         kill: {
           title: 'KILL',
           emoji: '❌',
-          description: 'Esta idea tiene demasiadas debilidades estructurales. Los problemas identificados no pueden arreglarse con mejor ejecucion—requieren un enfoque completamente diferente.',
+          description: 'Esta idea tiene demasiadas debilidades estructurales. Los problemas identificados no pueden arreglarse con mejor ejecución—requieren un enfoque completamente diferente.',
         },
         flip: {
           title: 'FLIP',
           emoji: '🔁',
-          description: 'Esta idea tiene potencial, pero se requiere un pivote significativo para sobrevivir. Enfocate en abordar las areas de riesgo principales antes de invertir mas tiempo.',
+          description: 'Esta idea tiene potencial, pero se requiere un pivote significativo para sobrevivir. Enfócate en abordar las áreas de riesgo principales antes de invertir más tiempo.',
         },
         build: {
           title: 'BUILD',
           emoji: '🧱',
-          description: 'Esta idea es defendible con disciplina. Ejecuta cuidadosamente, prioriza construir fosos, y evita la tentacion de sobre-expandirte.',
+          description: 'Esta idea es defendible con disciplina. Ejecuta cuidadosamente, prioriza construir fosos, y evita la tentación de sobre-expandirte.',
         },
         bet: {
           title: 'BET',
           emoji: '🎲',
-          description: 'Esta es una oportunidad fuerte con potencial asimetrico favorable. La desventaja es significativa, pero la recompensa potencial justifica una apuesta calculada.',
+          description: 'Esta es una oportunidad fuerte con potencial asimétrico favorable. La desventaja es significativa, pero la recompensa potencial justifica una apuesta calculada.',
         },
       },
       scores: {
@@ -792,18 +826,18 @@ export const translations = {
         platformRisk: 'Riesgo de Plataforma',
         lockInStrength: 'Fuerza de Lock-in',
         pricingPower: 'Poder de Precios',
-        yourScore: 'Tu Puntuacion',
-        aiScore: 'Puntuacion IA',
+        yourScore: 'Tu Puntuación',
+        aiScore: 'Puntuación IA',
       },
       aiAnalysis: {
-        title: 'Analisis de IA',
+        title: 'Análisis de IA',
         confidence: 'Confianza',
         rationale: 'Razonamiento',
         contradictions: 'Contradicciones Detectadas',
-        noContradictions: 'Tu autoevaluacion parece consistente con tus respuestas escritas.',
+        noContradictions: 'Tu autoevaluación parece consistente con tus respuestas escritas.',
         adjustedScores: 'Puntuaciones Ajustadas por IA',
         analyzing: 'Analizando tus respuestas...',
-        error: 'El analisis fallo. Mostrando evaluacion basica.',
+        error: 'El análisis falló. Mostrando evaluación básica.',
         fieldLabels: {
           copycatRisk: 'Riesgo de Copia',
           platformRisk: 'Riesgo de Plataforma',
@@ -818,7 +852,7 @@ export const translations = {
         copyResults: 'Copiar Resultados',
         copied: '¡Copiado!',
       },
-      note: 'Recuerda: Matar una idea temprano es exito, no fracaso. Si no estas seguro, ejecuta el test de nuevo con respuestas mas honestas.',
+      note: 'Recuerda: Matar una idea temprano es éxito, no fracaso. Si no estás seguro, ejecuta el test de nuevo con respuestas más honestas.',
     },
 
     // Common

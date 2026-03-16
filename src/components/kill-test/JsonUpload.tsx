@@ -329,7 +329,7 @@ interface JsonUploadProps {
 }
 
 export function JsonUpload({ onBack }: JsonUploadProps) {
-  const { language } = useLanguage();
+  const { language, t: globalT } = useLanguage();
   const [jsonText, setJsonText] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [preview, setPreview] = useState<JsonInputData | null>(null);
@@ -361,16 +361,16 @@ export function JsonUpload({ onBack }: JsonUploadProps) {
     es: {
       title: 'Subir JSON',
       subtitle: 'Para flujos asistidos por IA',
-      description: 'Ya exploraste tu idea con IA? Pega tu analisis estructurado abajo.',
-      placeholder: 'Pega tu JSON aqui...',
+      description: '¿Ya exploraste tu idea con IA? Pega tu análisis estructurado abajo.',
+      placeholder: 'Pega tu JSON aquí...',
       validate: 'Validar y Previsualizar',
-      submit: 'Enviar para Analisis',
+      submit: 'Enviar para Análisis',
       back: 'Volver a Opciones',
-      dropzone: 'Suelta el archivo JSON aqui o haz clic para subir',
+      dropzone: 'Suelta el archivo JSON aquí o haz clic para subir',
       downloadTemplate: 'Descargar Plantilla',
-      templateHint: 'Dale esta plantilla a tu asistente de IA para estructurar el analisis de tu idea.',
+      templateHint: 'Dale esta plantilla a tu asistente de IA para estructurar el análisis de tu idea.',
       errors: {
-        invalidJson: 'Formato JSON invalido. Revisa la sintaxis.',
+        invalidJson: 'Formato JSON inválido. Revisa la sintaxis.',
         missingFields: 'Faltan campos requeridos. Incluye al menos idea_definition y scoring.',
       },
       preview: {
@@ -589,25 +589,25 @@ export function JsonUpload({ onBack }: JsonUploadProps) {
                   </span>
                   <div className="mt-2 grid grid-cols-2 gap-2">
                     <div className="rounded bg-neutral-100 px-3 py-2 dark:bg-neutral-800">
-                      <span className="text-xs text-neutral-500">Copycat Risk</span>
+                      <span className="text-xs text-neutral-500">{globalT.results.scores.copycatRisk}</span>
                       <p className="font-bold text-neutral-900 dark:text-white">
                         {preview.scoring.copycat_risk}/10
                       </p>
                     </div>
                     <div className="rounded bg-neutral-100 px-3 py-2 dark:bg-neutral-800">
-                      <span className="text-xs text-neutral-500">Platform Risk</span>
+                      <span className="text-xs text-neutral-500">{globalT.results.scores.platformRisk}</span>
                       <p className="font-bold text-neutral-900 dark:text-white">
                         {preview.scoring.platform_risk}/10
                       </p>
                     </div>
                     <div className="rounded bg-neutral-100 px-3 py-2 dark:bg-neutral-800">
-                      <span className="text-xs text-neutral-500">Lock-in</span>
+                      <span className="text-xs text-neutral-500">{globalT.results.scores.lockInStrength}</span>
                       <p className="font-bold text-neutral-900 dark:text-white">
                         {preview.scoring.lock_in_strength}/10
                       </p>
                     </div>
                     <div className="rounded bg-neutral-100 px-3 py-2 dark:bg-neutral-800">
-                      <span className="text-xs text-neutral-500">Pricing Power</span>
+                      <span className="text-xs text-neutral-500">{globalT.results.scores.pricingPower}</span>
                       <p className="font-bold text-neutral-900 dark:text-white">
                         {preview.scoring.pricing_power}/10
                       </p>
@@ -619,7 +619,7 @@ export function JsonUpload({ onBack }: JsonUploadProps) {
               {preview.self_reflection?.biggest_unresolved_risk && (
                 <div>
                   <span className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
-                    {language === 'en' ? 'Biggest Risk' : 'Mayor Riesgo'}
+                    {text.preview.biggestRisk}
                   </span>
                   <p className="mt-1 text-neutral-900 dark:text-white">
                     {preview.self_reflection.biggest_unresolved_risk}
