@@ -1,0 +1,21 @@
+{
+  "name": "AI Idea Validator",
+  "short_name": "AI Validator",
+  "description": "Brutal startup defensibility assessment with AI contradiction detection",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#ea580c",
+  "icons": [
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
