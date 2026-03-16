@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
@@ -16,6 +16,10 @@ const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  themeColor: "#ea580c",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://aiideavalidator.com"),
@@ -75,9 +79,22 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  alternates: {
+    canonical: "https://aiideavalidator.com",
+    languages: {
+      "en": "https://aiideavalidator.com",
+      "es": "https://aiideavalidator.com",
+      "x-default": "https://aiideavalidator.com",
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+      { url: "/favicon-16x16.png", type: "image/png", sizes: "16x16" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180" },
     ],
   },
 };
@@ -89,6 +106,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://formspree.io" />
+      </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased`}>
         <Providers>
           <div className="flex min-h-screen flex-col bg-background text-foreground">
