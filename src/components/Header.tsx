@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/contexts/LanguageContext';
@@ -45,8 +46,16 @@ export function Header() {
           {/* Logo */}
           <Link
             href="/"
-            className="text-xl font-bold tracking-tight text-orange-600 dark:text-orange-500"
+            className="flex items-center gap-2 text-xl font-bold tracking-tight text-orange-600 dark:text-orange-500"
           >
+            <Image
+              src="/logo.webp"
+              alt=""
+              width={32}
+              height={32}
+              className="h-8 w-8"
+              priority
+            />
             {t.header.logo}
           </Link>
 
@@ -162,7 +171,14 @@ export function Header() {
       >
         {/* Menu Header */}
         <div className="flex h-16 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
-          <span className="text-lg font-bold text-orange-600 dark:text-orange-500">
+          <span className="flex items-center gap-2 text-lg font-bold text-orange-600 dark:text-orange-500">
+            <Image
+              src="/logo.webp"
+              alt=""
+              width={28}
+              height={28}
+              className="h-7 w-7"
+            />
             {t.header.logo}
           </span>
           <button
