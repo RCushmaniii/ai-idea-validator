@@ -3,34 +3,63 @@
 portfolio_enabled: true
 portfolio_priority: 2
 portfolio_featured: true
+portfolio_last_reviewed: "2026-03-16"
 
-# === CARD DISPLAY ===
+# === IDENTITY ===
 title: "AI Idea Validator"
 tagline: "Brutal startup defensibility assessment with AI contradiction detection"
 slug: "ai-idea-validator"
+
+# === CLASSIFICATION ===
 category: "AI Automation"
+target_audience: "Founders and solopreneurs validating startup ideas before committing resources"
+tags:
+  - "ai"
+  - "startup-validation"
+  - "openai"
+  - "nextjs"
+  - "defensibility"
+  - "founder-tools"
+  - "contradiction-detection"
+  - "bilingual"
+
+# === VISUALS ===
+thumbnail: "/images/portfolio/aI-Idea-validator-thumb.jpg"
+hero_images:
+  - "/images/portfolio/aI-Idea-validator-01.png"
+  - "/images/portfolio/aI-Idea-validator-02.png"
+  - "/images/portfolio/aI-Idea-validator-03.png"
+  - "/images/portfolio/aI-Idea-validator-04.png"
+  - "/images/portfolio/aI-Idea-validator-05.png"
+  - "/images/portfolio/aI-Idea-validator-06.png"
+demo_video_url: "/video/aI-Idea-validator-brief.mp4"
+
+# === LINKS ===
+live_url: "https://ai-idea-validator.netlify.app/"
+demo_url: "https://ai-idea-validator.netlify.app/"
+case_study_url: ""
+
+# === SALES CONTENT ===
+problem_solved: |
+  Founders waste months building ideas that are structurally replaceable because traditional validation tools ignore defensibility. Self-assessment alone can't catch optimism bias — founders consistently rate their moats high while describing products with no switching costs.
+key_outcomes:
+  - "23-question defensibility assessment across 4 sections with AI-powered contradiction detection"
+  - "4 honest verdicts (KILL/FLIP/BUILD/BET) with confidence scores and detailed rationale"
+  - "AI cross-references numeric self-assessment vs written responses to surface optimism bias"
+  - "Full EN/ES bilingual support including AI-generated verdicts and analysis"
+  - "Offline heuristic fallback — always returns a verdict, even without API access"
+  - "Sub-3-second AI analysis via GPT-4o-mini"
+
+# === TECH ===
 tech_stack:
   - "Next.js 15"
   - "React 19"
   - "TypeScript"
   - "OpenAI GPT-4o-mini"
   - "Tailwind CSS 4"
-thumbnail: "/images/portfolio/aI-Idea-validator-thumb.jpg"
-status: "Production"
-
-# === DETAIL PAGE ===
-problem: "Founders waste months building ideas that are structurally replaceable because traditional validation tools ignore defensibility. Self-assessment alone can't catch optimism bias — founders consistently rate their moats high while describing products with no switching costs."
-solution: "A 23-question structured assessment that probes defensibility across moats, platform risk, lock-in, and failure modes. GPT-4o-mini cross-references numeric scores against written responses, detects contradictions, and delivers one of four verdicts — KILL, FLIP, BUILD, or BET — with specific reasoning in under 3 seconds."
-key_features:
-  - "23-question defensibility assessment across 4 sections with AI-powered contradiction detection"
-  - "4 honest verdicts (KILL/FLIP/BUILD/BET) with confidence scores and detailed rationale"
-  - "AI cross-references numeric self-assessment vs written responses to surface optimism bias"
-  - "Full EN/ES bilingual support including AI-generated verdicts and analysis"
-  - "Offline heuristic fallback — always returns a verdict, even without API access"
-
-# === LINKS ===
-demo_url: "https://ai-idea-validator.netlify.app/"
-live_url: "https://ai-idea-validator.netlify.app/"
+  - "Netlify"
+  - "Formspree"
+complexity: "Production"
 
 # === MEDIA: PORTFOLIO SLIDES ===
 slides:
@@ -61,19 +90,6 @@ video_url: "/video/aI-Idea-validator-brief.mp4"
 video_poster: "/video/aI-Idea-validator-brief-poster.jpg"
 
 # === OPTIONAL ===
-metrics:
-  - "Sub-3-second AI analysis via GPT-4o-mini"
-  - "23 questions across 4 defensibility sections"
-  - "4 verdicts with confidence scores and specific rationale"
-tags:
-  - "ai"
-  - "startup-validation"
-  - "openai"
-  - "nextjs"
-  - "defensibility"
-  - "founder-tools"
-  - "contradiction-detection"
-  - "bilingual"
 date_completed: "2026-02"
 ---
 
@@ -113,3 +129,8 @@ No account required. No data stored. No tracking. Answer the questions, get the 
 - **JSON import/export schema (v2.0)** enabling programmatic batch analysis and archiving
 - **Zero persistent storage** — no accounts, no databases, no cookies, no analytics
 - **Bilingual AI output** — GPT generates verdicts natively in the selected language, not post-translated
+
+## Results
+
+- **For Founders:** Get a structurally honest assessment of defensibility in under 3 seconds — before investing months of development time. The contradiction detection catches the optimism bias that self-assessment alone misses.
+- **Technical Demonstration:** Production-grade Next.js 15 application with server-side AI integration, graceful degradation, bilingual AI output generation, and zero-storage privacy architecture. Sub-3-second analysis round-trips through GPT-4o-mini with structured output parsing.
