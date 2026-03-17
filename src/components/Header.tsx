@@ -49,7 +49,7 @@ export function Header() {
             className="flex items-center gap-2 text-xl font-bold tracking-tight text-orange-600 dark:text-orange-500"
           >
             <Image
-              src="/logo.webp"
+              src={theme === 'dark' ? '/logo-white.webp' : '/logo-dark.webp'}
               alt=""
               width={32}
               height={32}
@@ -173,7 +173,7 @@ export function Header() {
         <div className="flex h-16 items-center justify-between border-b border-neutral-200 px-4 dark:border-neutral-800">
           <span className="flex items-center gap-2 text-lg font-bold text-orange-600 dark:text-orange-500">
             <Image
-              src="/logo.webp"
+              src={theme === 'dark' ? '/logo-white.webp' : '/logo-dark.webp'}
               alt=""
               width={28}
               height={28}
