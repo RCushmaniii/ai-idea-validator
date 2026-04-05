@@ -20,7 +20,7 @@
     "react-dom": "19.2.3"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3.3.3",
+    "@eslint/eslintrc": "^3.3.5",
     "@netlify/plugin-nextjs": "^5.15.5",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
