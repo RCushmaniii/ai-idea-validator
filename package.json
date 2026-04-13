@@ -15,7 +15,7 @@
     "ci": "npm run lint && npm run typecheck && npm run build"
   },
   "dependencies": {
-    "next": "^15.5.9",
+    "next": "^15.5.15",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
