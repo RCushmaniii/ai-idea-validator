@@ -1,8 +1,8 @@
 ---
 # === CONTROL FLAGS ===
 portfolio_enabled: true
-portfolio_priority: 2
-portfolio_featured: true
+portfolio_priority: 13
+portfolio_featured: false
 portfolio_last_reviewed: "2026-03-16"
 
 # === IDENTITY ===
@@ -42,6 +42,8 @@ case_study_url: ""
 # === SALES CONTENT ===
 problem_solved: |
   Founders waste months building ideas that are structurally replaceable because traditional validation tools ignore defensibility. Self-assessment alone can't catch optimism bias — founders consistently rate their moats high while describing products with no switching costs.
+solution: |
+  A 23-question structured assessment across four sections probes defensibility from multiple angles, with each question targeting a documented startup failure mode. GPT-4o-mini cross-references the numeric self-assessment scores against the written qualitative responses to flag specific contradictions and surface optimism bias. It then delivers one of four honest verdicts — KILL, FLIP, BUILD, or BET — each with a confidence score and detailed rationale. The entire experience is natively bilingual EN/ES, and an offline heuristic fallback always returns a verdict even without API access.
 key_outcomes:
   - "23-question defensibility assessment across 4 sections with AI-powered contradiction detection"
   - "4 honest verdicts (KILL/FLIP/BUILD/BET) with confidence scores and detailed rationale"
@@ -49,6 +51,12 @@ key_outcomes:
   - "Full EN/ES bilingual support including AI-generated verdicts and analysis"
   - "Offline heuristic fallback — always returns a verdict, even without API access"
   - "Sub-3-second AI analysis via GPT-4o-mini"
+
+metrics:
+  - "Structurally honest defensibility assessment delivered in under 3 seconds"
+  - "Contradiction detection catches the optimism bias that self-assessment alone misses"
+  - "Production-grade Next.js 15 app with server-side AI that keeps OpenAI keys off the client"
+  - "Zero-storage privacy architecture — no accounts, databases, cookies, or analytics"
 
 # === TECH ===
 tech_stack:
@@ -102,19 +110,6 @@ health_status:
   health_endpoint: "Y"
   security_headers: "Y"
   rate_limiting: "Y"
-  env_validation: "-"
-  analytics: "DEFERRED"
-  structured_logging: "-"
-  dependabot: "Y"
-  secret_scanning: "Y"
-  db_backup: "-"
-health_status:
-  sentry: "-"
-  testing: "-"
-  ci_cd: "Y"
-  health_endpoint: "Y"
-  security_headers: "-"
-  rate_limiting: "-"
   env_validation: "-"
   analytics: "DEFERRED"
   structured_logging: "-"
