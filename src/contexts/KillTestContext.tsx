@@ -1,10 +1,12 @@
-'use client';
+"use client";
 
-import { createContext, useContext, useState, useCallback } from 'react';
-import { getAllQuestions, getTotalQuestions } from '@/lib/killTestQuestions';
-import { useLanguage } from '@/contexts/LanguageContext';
+import type { AnalysisResult } from "@/lib/analysis-schema";
 
-export type Verdict = 'kill' | 'flip' | 'build' | 'bet';
+import { createContext, useContext, useState, useCallback } from "react";
+import { getAllQuestions, getTotalQuestions } from "@/lib/killTestQuestions";
+import { useLanguage } from "@/contexts/LanguageContext";
+
+export type Verdict = "kill" | "flip" | "build" | "bet";
 
 export interface TestAnswers {
   [key: string]: string | number;
@@ -52,6 +54,13 @@ export interface TestResult {
     pricingPower: number;
   };
   aiAnalysis?: AIAnalysis;
+  /** The full Opus 5 analysis. When present, this is what the UI renders —
+   *  the legacy fields above are locally-computed template text and are only
+   *  a fallback for results produced before the engine rewrite. */
+  analysis?: AnalysisResult;
+  /** Set when the API call failed, so the UI can say so instead of silently
+   *  showing locally-generated placeholder text as if it were an analysis. */
+  analysisError?: string;
 }
 
 interface KillTestContextType {
@@ -73,7 +82,9 @@ interface KillTestContextType {
   canProceed: () => boolean;
 }
 
-const KillTestContext = createContext<KillTestContextType | undefined>(undefined);
+const KillTestContext = createContext<KillTestContextType | undefined>(
+  undefined,
+);
 
 function calculateOfflineVerdict(answers: TestAnswers): TestResult {
   // Get scores from the scoring section
@@ -90,25 +101,25 @@ function calculateOfflineVerdict(answers: TestAnswers): TestResult {
   // Build weak signals list
   const weakSignals: WeakSignal[] = [
     {
-      id: 'copycatRisk',
+      id: "copycatRisk",
       score: copycatRisk,
       maxScore: 10,
       isWeak: copycatRisk >= 7,
     },
     {
-      id: 'platformRisk',
+      id: "platformRisk",
       score: platformRisk,
       maxScore: 10,
       isWeak: platformRisk >= 7,
     },
     {
-      id: 'lockInStrength',
+      id: "lockInStrength",
       score: lockInStrength,
       maxScore: 10,
       isWeak: lockInStrength <= 4,
     },
     {
-      id: 'pricingPower',
+      id: "pricingPower",
       score: pricingPower,
       maxScore: 10,
       isWeak: pricingPower <= 4,
@@ -116,79 +127,88 @@ function calculateOfflineVerdict(answers: TestAnswers): TestResult {
   ];
 
   // Adjust based on qualitative answers
-  if (copycatVelocity === 'under30') {
+  if (copycatVelocity === "under30") {
     weakSignals[0].isWeak = true;
   }
-  if (dataCompounding === 'no') {
+  if (dataCompounding === "no") {
     weakSignals[2].isWeak = true;
   }
-  if (pricingPowerQual === 'no') {
+  if (pricingPowerQual === "no") {
     weakSignals[3].isWeak = true;
   }
 
   // Count weak signals
-  const weakCount = weakSignals.filter(s => s.isWeak).length;
+  const weakCount = weakSignals.filter((s) => s.isWeak).length;
 
   // Determine verdict based on heuristics
   let verdict: Verdict;
 
   // Auto-determine based on signals
   if (weakCount >= 3) {
-    verdict = 'kill';
+    verdict = "kill";
   } else if (weakCount === 2) {
-    verdict = 'flip';
+    verdict = "flip";
   } else if (lockInStrength >= 6 && pricingPower >= 6 && copycatRisk <= 5) {
-    verdict = 'build';
+    verdict = "build";
   } else {
-    verdict = 'bet';
+    verdict = "bet";
   }
 
   // Generate compounding story based on weak signals
-  let compoundingStory = '';
-  const weakIds = weakSignals.filter(s => s.isWeak).map(s => s.id);
+  let compoundingStory = "";
+  const weakIds = weakSignals.filter((s) => s.isWeak).map((s) => s.id);
 
-  if (weakIds.includes('copycatRisk') && weakIds.includes('lockInStrength')) {
-    compoundingStory = 'Because this idea is easy to copy and has weak customer lock-in, competitors can undercut pricing quickly. ';
+  if (weakIds.includes("copycatRisk") && weakIds.includes("lockInStrength")) {
+    compoundingStory =
+      "Because this idea is easy to copy and has weak customer lock-in, competitors can undercut pricing quickly. ";
   }
-  if (weakIds.includes('pricingPower')) {
-    compoundingStory += 'The fragile pricing power means there\'s little margin to absorb competitive pressure. ';
+  if (weakIds.includes("pricingPower")) {
+    compoundingStory +=
+      "The fragile pricing power means there's little margin to absorb competitive pressure. ";
   }
-  if (weakIds.includes('platformRisk')) {
-    compoundingStory += 'Heavy platform dependency adds a layer of existential risk that compounds other weaknesses. ';
+  if (weakIds.includes("platformRisk")) {
+    compoundingStory +=
+      "Heavy platform dependency adds a layer of existential risk that compounds other weaknesses. ";
   }
-  if (compoundingStory === '') {
-    if (verdict === 'build') {
-      compoundingStory = 'The core signals are strong. Focus on execution and building moats early while you have momentum.';
+  if (compoundingStory === "") {
+    if (verdict === "build") {
+      compoundingStory =
+        "The core signals are strong. Focus on execution and building moats early while you have momentum.";
     } else {
-      compoundingStory = 'The risk profile is mixed. The outcome depends heavily on external factors and execution quality.';
+      compoundingStory =
+        "The risk profile is mixed. The outcome depends heavily on external factors and execution quality.";
     }
   }
 
   // Generate pivot suggestions based on weak signals
   const pivotSuggestions: PivotSuggestion[] = [];
 
-  if (weakIds.includes('lockInStrength')) {
+  if (weakIds.includes("lockInStrength")) {
     pivotSuggestions.push({
-      type: 'lockIn',
-      suggestion: 'Shift from a convenience feature to a system that owns a critical workflow (e.g., revenue recovery, compliance, payments).',
+      type: "lockIn",
+      suggestion:
+        "Shift from a convenience feature to a system that owns a critical workflow (e.g., revenue recovery, compliance, payments).",
     });
   }
-  if (weakIds.includes('copycatRisk')) {
+  if (weakIds.includes("copycatRisk")) {
     pivotSuggestions.push({
-      type: 'niche',
-      suggestion: 'Focus on a narrowly defined vertical where domain rules, language, or regulation create friction for competitors.',
+      type: "niche",
+      suggestion:
+        "Focus on a narrowly defined vertical where domain rules, language, or regulation create friction for competitors.",
     });
   }
-  if (weakIds.includes('pricingPower')) {
+  if (weakIds.includes("pricingPower")) {
     pivotSuggestions.push({
-      type: 'value',
-      suggestion: 'Tie pricing to recovered revenue, avoided costs, or risk reduction rather than usage or features.',
+      type: "value",
+      suggestion:
+        "Tie pricing to recovered revenue, avoided costs, or risk reduction rather than usage or features.",
     });
   }
-  if (weakIds.includes('platformRisk')) {
+  if (weakIds.includes("platformRisk")) {
     pivotSuggestions.push({
-      type: 'platform',
-      suggestion: 'Add a second execution path (multi-channel, offline fallback, or customer-owned data layer).',
+      type: "platform",
+      suggestion:
+        "Add a second execution path (multi-channel, offline fallback, or customer-owned data layer).",
     });
   }
 
@@ -226,9 +246,12 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
     setResult(null);
   }, []);
 
-  const setAnswer = useCallback((questionId: string, value: string | number) => {
-    setAnswers((prev) => ({ ...prev, [questionId]: value }));
-  }, []);
+  const setAnswer = useCallback(
+    (questionId: string, value: string | number) => {
+      setAnswers((prev) => ({ ...prev, [questionId]: value }));
+    },
+    [],
+  );
 
   const getCurrentQuestion = useCallback(() => {
     if (currentQuestionIndex >= allQuestions.length) return null;
@@ -240,8 +263,8 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
     if (!current) return false;
     const answer = answers[current.question.id];
     if (!current.question.required) return true;
-    if (typeof answer === 'string') return answer.trim().length > 0;
-    if (typeof answer === 'number') return true;
+    if (typeof answer === "string") return answer.trim().length > 0;
+    if (typeof answer === "number") return true;
     return false;
   }, [getCurrentQuestion, answers]);
 
@@ -266,71 +289,88 @@ export function KillTestProvider({ children }: { children: React.ReactNode }) {
     setResult(offlineResult);
 
     try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ answers, language }),
       });
 
       if (response.ok) {
         const aiResult = await response.json();
 
-        // Update result with AI analysis
+        // Carry the full analysis through. The previous version cherry-picked
+        // four fields off the response and threw the rest away.
         setResult({
           ...offlineResult,
           verdict: aiResult.verdict,
-          aiAnalysis: {
-            confidence: aiResult.confidence,
-            rationale: aiResult.rationale,
-            contradictions: aiResult.contradictions || [],
-            adjustedScores: aiResult.adjustedScores,
-          },
+          analysis: aiResult as AnalysisResult,
+        });
+      } else {
+        const body = await response.json().catch(() => ({}));
+        setResult({
+          ...offlineResult,
+          analysisError:
+            body?.error ??
+            `Analysis failed (${response.status}). Please try again.`,
         });
       }
     } catch (error) {
-      console.error('AI analysis failed:', error);
-      // Keep offline result
+      console.error("AI analysis failed:", error);
+      setResult((prev) =>
+        prev
+          ? {
+              ...prev,
+              analysisError: "Analysis could not be reached. Please try again.",
+            }
+          : prev,
+      );
     } finally {
       setIsAnalyzing(false);
     }
   }, [answers, language]);
 
-  const submitWithAnswers = useCallback(async (externalAnswers: TestAnswers) => {
-    setAnswers(externalAnswers);
-    setIsAnalyzing(true);
-    setIsCompleted(true);
+  const submitWithAnswers = useCallback(
+    async (externalAnswers: TestAnswers) => {
+      setAnswers(externalAnswers);
+      setIsAnalyzing(true);
+      setIsCompleted(true);
 
-    // Start with offline calculation
-    const offlineResult = calculateOfflineVerdict(externalAnswers);
-    setResult(offlineResult);
+      // Start with offline calculation
+      const offlineResult = calculateOfflineVerdict(externalAnswers);
+      setResult(offlineResult);
 
-    try {
-      const response = await fetch('/api/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers: externalAnswers, language }),
-      });
-
-      if (response.ok) {
-        const aiResult = await response.json();
-
-        setResult({
-          ...offlineResult,
-          verdict: aiResult.verdict,
-          aiAnalysis: {
-            confidence: aiResult.confidence,
-            rationale: aiResult.rationale,
-            contradictions: aiResult.contradictions || [],
-            adjustedScores: aiResult.adjustedScores,
-          },
+      try {
+        const response = await fetch("/api/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ answers: externalAnswers, language }),
         });
+
+        if (response.ok) {
+          const aiResult = await response.json();
+
+          setResult({
+            ...offlineResult,
+            verdict: aiResult.verdict,
+            analysis: aiResult as AnalysisResult,
+          });
+        } else {
+          const body = await response.json().catch(() => ({}));
+          setResult({
+            ...offlineResult,
+            analysisError:
+              body?.error ??
+              `Analysis failed (${response.status}). Please try again.`,
+          });
+        }
+      } catch (error) {
+        console.error("AI analysis failed:", error);
+      } finally {
+        setIsAnalyzing(false);
       }
-    } catch (error) {
-      console.error('AI analysis failed:', error);
-    } finally {
-      setIsAnalyzing(false);
-    }
-  }, [language]);
+    },
+    [language],
+  );
 
   const resetTest = useCallback(() => {
     setCurrentQuestionIndex(0);

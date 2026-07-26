@@ -24,10 +24,15 @@ const MODEL = "claude-opus-5";
  * unmetered one is not.
  */
 const upstashConfigured = Boolean(
-  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN,
+  process.env.IDEA_VALIDATOR_UPSTASH_URL && process.env.IDEA_VALIDATOR_UPSTASH_TOKEN,
 );
 
-const redis = upstashConfigured ? Redis.fromEnv() : null;
+const redis = upstashConfigured
+  ? new Redis({
+      url: process.env.IDEA_VALIDATOR_UPSTASH_URL!,
+      token: process.env.IDEA_VALIDATOR_UPSTASH_TOKEN!,
+    })
+  : null;
 
 // Two windows: bursts and sustained abuse are different attacks.
 const perMinute = redis
@@ -205,8 +210,8 @@ export async function POST(request: Request) {
   // ── Rate limit ────────────────────────────────────────────────────────────
   if (!perMinute || !perDay) {
     console.error(
-      "[analyze] Upstash is not configured. Set UPSTASH_REDIS_REST_URL and " +
-        "UPSTASH_REDIS_REST_TOKEN. Refusing to run an uncapped premium-model endpoint.",
+      "[analyze] Upstash is not configured. Set IDEA_VALIDATOR_UPSTASH_URL and " +
+        "IDEA_VALIDATOR_UPSTASH_TOKEN. Refusing to run an uncapped premium-model endpoint.",
     );
     return NextResponse.json(
       {
@@ -235,12 +240,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.IDEA_VALIDATOR_ANTHROPIC_KEY;
   if (!apiKey) {
     // Fail loudly. The previous version silently served canned template text
     // here, which is a large part of why the tool felt shallow — a missing key
     // was indistinguishable from a real analysis.
-    console.error("[analyze] ANTHROPIC_API_KEY is not set.");
+    console.error("[analyze] IDEA_VALIDATOR_ANTHROPIC_KEY is not set.");
     return NextResponse.json(
       {
         error:
