@@ -77,10 +77,29 @@ function Section({ title, body }: { title: string; body?: string }) {
  * is bad news, for a strength dimension a lower one is. Colouring them the same
  * way would invert the meaning on half the rows.
  */
+/**
+ * Which direction is bad news is a fixed property of the dimension, not a
+ * judgement call — so it is derived here rather than trusted from the model.
+ *
+ * Observed 2026-07-28 in a real response: `lock_in_strength` came back labelled
+ * `higherIs: "worse"` while `pricing_power` was correctly labelled "better" in
+ * the same payload. Trusting that field would have rendered a 5-point drop in
+ * lock-in — the largest contradiction in that analysis — as unremarkable.
+ */
+const HIGHER_IS: Record<string, "worse" | "better"> = {
+  copycat_risk: "worse",
+  platform_risk: "worse",
+  execution_risk: "worse",
+  regulatory_risk: "worse",
+  lock_in_strength: "better",
+  pricing_power: "better",
+};
+
 function ScoreRow({ score, es }: { score: RiskScore; es: boolean }) {
   const gap =
     score.selfScore === null ? 0 : score.adjustedScore - score.selfScore;
-  const badNews = score.higherIs === "worse" ? gap >= 2 : gap <= -2;
+  const direction = HIGHER_IS[score.key] ?? score.higherIs;
+  const badNews = direction === "worse" ? gap >= 2 : gap <= -2;
 
   return (
     <div className="border-t border-neutral-200 py-4 first:border-t-0 dark:border-neutral-800">
