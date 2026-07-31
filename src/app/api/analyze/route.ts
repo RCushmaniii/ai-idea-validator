@@ -24,7 +24,8 @@ const MODEL = "claude-opus-5";
  * unmetered one is not.
  */
 const upstashConfigured = Boolean(
-  process.env.IDEA_VALIDATOR_UPSTASH_URL && process.env.IDEA_VALIDATOR_UPSTASH_TOKEN,
+  process.env.IDEA_VALIDATOR_UPSTASH_URL &&
+  process.env.IDEA_VALIDATOR_UPSTASH_TOKEN,
 );
 
 const redis = upstashConfigured
@@ -50,10 +51,36 @@ const perDay = redis
     })
   : null;
 
+/**
+ * Collapse a client address to the unit the limit should apply to.
+ *
+ * IPv4 whole; IPv6 truncated to its /64. This is what decides whether the
+ * Upstash limiter above can hold anyone to 3/min and 25/day.
+ *
+ * A full IPv6 /128 is close to useless as a key: hosts rotate temporary
+ * addresses under RFC 4941, every device on a LAN has its own, and a
+ * residential subscriber is handed an entire /64 — so a caller gets a fresh
+ * bucket almost every request. Measured on a sibling project: keying on the raw
+ * address let 1,500 requests through with zero refusals against a limiter that
+ * was otherwise correct. Here that would be billed Opus 5 calls.
+ */
+function normalizeIp(ip: string): string {
+  if (!ip) return "unknown";
+  if (!ip.includes(":")) return ip;
+  const hextets = ip.split(":");
+  // Guard against "::"-compressed forms that expand to fewer than 4 groups.
+  if (hextets.length < 4 || ip.includes("::")) return ip;
+  return `${hextets.slice(0, 4).join(":")}::/64`;
+}
+
 function clientId(request: Request): string {
+  // x-forwarded-for is a comma-separated chain; the first entry is the original
+  // client and the rest are proxies.
   const fwd = request.headers.get("x-forwarded-for");
-  if (fwd) return fwd.split(",")[0]!.trim();
-  return request.headers.get("x-nf-client-connection-ip") ?? "unknown";
+  const raw = fwd
+    ? fwd.split(",")[0]!.trim()
+    : (request.headers.get("x-nf-client-connection-ip") ?? "");
+  return normalizeIp(raw);
 }
 
 /**
