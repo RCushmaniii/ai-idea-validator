@@ -1,8 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useLanguage } from '@/contexts/LanguageContext';
-import { useKillTest, Verdict } from '@/contexts/KillTestContext';
+import { useState } from "react";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { useKillTest, Verdict } from "@/contexts/KillTestContext";
+import AnalysisReport from "./AnalysisReport";
 
 // Info Tooltip Component
 function InfoTooltip({ content }: { content: string }) {
@@ -40,104 +41,107 @@ function InfoTooltip({ content }: { content: string }) {
   );
 }
 
-const verdictColors: Record<Verdict, { bg: string; border: string; text: string }> = {
+const verdictColors: Record<
+  Verdict,
+  { bg: string; border: string; text: string }
+> = {
   kill: {
-    bg: 'bg-red-50 dark:bg-red-950/30',
-    border: 'border-red-200 dark:border-red-900/50',
-    text: 'text-red-700 dark:text-red-400',
+    bg: "bg-red-50 dark:bg-red-950/30",
+    border: "border-red-200 dark:border-red-900/50",
+    text: "text-red-700 dark:text-red-400",
   },
   flip: {
-    bg: 'bg-yellow-50 dark:bg-yellow-950/30',
-    border: 'border-yellow-200 dark:border-yellow-900/50',
-    text: 'text-yellow-700 dark:text-yellow-400',
+    bg: "bg-yellow-50 dark:bg-yellow-950/30",
+    border: "border-yellow-200 dark:border-yellow-900/50",
+    text: "text-yellow-700 dark:text-yellow-400",
   },
   build: {
-    bg: 'bg-green-50 dark:bg-green-950/30',
-    border: 'border-green-200 dark:border-green-900/50',
-    text: 'text-green-700 dark:text-green-400',
+    bg: "bg-green-50 dark:bg-green-950/30",
+    border: "border-green-200 dark:border-green-900/50",
+    text: "text-green-700 dark:text-green-400",
   },
   bet: {
-    bg: 'bg-orange-50 dark:bg-orange-950/30',
-    border: 'border-orange-200 dark:border-orange-900/50',
-    text: 'text-orange-700 dark:text-orange-400',
+    bg: "bg-orange-50 dark:bg-orange-950/30",
+    border: "border-orange-200 dark:border-orange-900/50",
+    text: "text-orange-700 dark:text-orange-400",
   },
 };
 
 const verdictLabels: Record<Verdict, { en: string; es: string }> = {
-  kill: { en: 'Stop here.', es: 'Detente aqui.' },
-  flip: { en: 'Consider a pivot.', es: 'Considera un pivote.' },
-  build: { en: 'You should build this!', es: 'Deberias construir esto!' },
-  bet: { en: 'A calculated risk.', es: 'Un riesgo calculado.' },
+  kill: { en: "Stop here.", es: "Detente aqui." },
+  flip: { en: "Consider a pivot.", es: "Considera un pivote." },
+  build: { en: "You should build this!", es: "Deberias construir esto!" },
+  bet: { en: "A calculated risk.", es: "Un riesgo calculado." },
 };
 
 const signalLabels: Record<string, { en: string; es: string }> = {
-  copycatRisk: { en: 'Copycat Risk', es: 'Riesgo de Copia' },
-  platformRisk: { en: 'Platform Risk', es: 'Riesgo de Plataforma' },
-  lockInStrength: { en: 'Lock-in Strength', es: 'Fuerza de Lock-in' },
-  pricingPower: { en: 'Pricing Power', es: 'Poder de Precios' },
+  copycatRisk: { en: "Copycat Risk", es: "Riesgo de Copia" },
+  platformRisk: { en: "Platform Risk", es: "Riesgo de Plataforma" },
+  lockInStrength: { en: "Lock-in Strength", es: "Fuerza de Lock-in" },
+  pricingPower: { en: "Pricing Power", es: "Poder de Precios" },
 };
 
 const signalExplanations: Record<string, { en: string; es: string }> = {
   copycatRisk: {
-    en: 'How easily competitors can replicate your core offering. Lower is better - a score of 4/10 means relatively low risk of being copied quickly.',
-    es: 'Que tan facil pueden los competidores replicar tu oferta principal. Menor es mejor - 4/10 significa riesgo relativamente bajo de ser copiado rapidamente.',
+    en: "How easily competitors can replicate your core offering. Lower is better - a score of 4/10 means relatively low risk of being copied quickly.",
+    es: "Que tan facil pueden los competidores replicar tu oferta principal. Menor es mejor - 4/10 significa riesgo relativamente bajo de ser copiado rapidamente.",
   },
   platformRisk: {
-    en: 'Your dependency on third-party platforms (APIs, app stores, etc). Lower is better - high scores mean a platform change could break your business.',
-    es: 'Tu dependencia de plataformas de terceros (APIs, tiendas de apps, etc). Menor es mejor - puntuaciones altas significan que un cambio de plataforma podria romper tu negocio.',
+    en: "Your dependency on third-party platforms (APIs, app stores, etc). Lower is better - high scores mean a platform change could break your business.",
+    es: "Tu dependencia de plataformas de terceros (APIs, tiendas de apps, etc). Menor es mejor - puntuaciones altas significan que un cambio de plataforma podria romper tu negocio.",
   },
   lockInStrength: {
-    en: 'How hard it is for customers to switch away from your product. Higher is better - strong lock-in means customers stay even when competitors appear.',
-    es: 'Que tan dificil es para los clientes cambiar de tu producto. Mayor es mejor - fuerte lock-in significa que los clientes se quedan incluso cuando aparecen competidores.',
+    en: "How hard it is for customers to switch away from your product. Higher is better - strong lock-in means customers stay even when competitors appear.",
+    es: "Que tan dificil es para los clientes cambiar de tu producto. Mayor es mejor - fuerte lock-in significa que los clientes se quedan incluso cuando aparecen competidores.",
   },
   pricingPower: {
-    en: 'Your ability to charge premium prices and resist price pressure. Higher is better - strong pricing power means sustainable margins.',
-    es: 'Tu capacidad de cobrar precios premium y resistir presion de precios. Mayor es mejor - fuerte poder de precios significa margenes sostenibles.',
+    en: "Your ability to charge premium prices and resist price pressure. Higher is better - strong pricing power means sustainable margins.",
+    es: "Tu capacidad de cobrar precios premium y resistir presion de precios. Mayor es mejor - fuerte poder de precios significa margenes sostenibles.",
   },
 };
 
 const weakSignalReasons: Record<string, { en: string; es: string }> = {
   copycatRisk: {
-    en: 'Marked weak because competitors could replicate your core value proposition quickly, reducing your competitive advantage.',
-    es: 'Marcado debil porque los competidores podrian replicar tu propuesta de valor rapidamente, reduciendo tu ventaja competitiva.',
+    en: "Marked weak because competitors could replicate your core value proposition quickly, reducing your competitive advantage.",
+    es: "Marcado debil porque los competidores podrian replicar tu propuesta de valor rapidamente, reduciendo tu ventaja competitiva.",
   },
   platformRisk: {
-    en: 'Marked weak because heavy reliance on external platforms creates existential risk if those platforms change terms or access.',
-    es: 'Marcado debil porque la fuerte dependencia de plataformas externas crea riesgo existencial si esas plataformas cambian terminos o acceso.',
+    en: "Marked weak because heavy reliance on external platforms creates existential risk if those platforms change terms or access.",
+    es: "Marcado debil porque la fuerte dependencia de plataformas externas crea riesgo existencial si esas plataformas cambian terminos o acceso.",
   },
   lockInStrength: {
-    en: 'Marked weak because customers can easily switch to alternatives, making retention difficult when competitors emerge.',
-    es: 'Marcado debil porque los clientes pueden cambiar facilmente a alternativas, dificultando la retencion cuando aparecen competidores.',
+    en: "Marked weak because customers can easily switch to alternatives, making retention difficult when competitors emerge.",
+    es: "Marcado debil porque los clientes pueden cambiar facilmente a alternativas, dificultando la retencion cuando aparecen competidores.",
   },
   pricingPower: {
-    en: 'Marked weak because you may struggle to maintain margins under competitive pressure or have to compete primarily on price.',
-    es: 'Marcado debil porque puedes tener dificultades para mantener margenes bajo presion competitiva o tener que competir principalmente en precio.',
+    en: "Marked weak because you may struggle to maintain margins under competitive pressure or have to compete primarily on price.",
+    es: "Marcado debil porque puedes tener dificultades para mantener margenes bajo presion competitiva o tener que competir principalmente en precio.",
   },
 };
 
 const pivotTypeLabels: Record<string, { en: string; es: string }> = {
-  lockIn: { en: 'Strengthen Lock-in', es: 'Fortalecer Lock-in' },
-  niche: { en: 'Focus Niche', es: 'Enfocarse en Nicho' },
-  value: { en: 'Restructure Value', es: 'Reestructurar Valor' },
-  platform: { en: 'Reduce Platform Risk', es: 'Reducir Riesgo de Plataforma' },
+  lockIn: { en: "Strengthen Lock-in", es: "Fortalecer Lock-in" },
+  niche: { en: "Focus Niche", es: "Enfocarse en Nicho" },
+  value: { en: "Restructure Value", es: "Reestructurar Valor" },
+  platform: { en: "Reduce Platform Risk", es: "Reducir Riesgo de Plataforma" },
 };
 
 const sectionExplanations = {
   riskScores: {
-    en: 'These four metrics measure key defensibility factors. Risk scores (Copycat, Platform) are better when low. Strength scores (Lock-in, Pricing Power) are better when high.',
-    es: 'Estas cuatro metricas miden factores clave de defensibilidad. Los puntajes de riesgo (Copia, Plataforma) son mejores cuando son bajos. Los puntajes de fuerza (Lock-in, Poder de Precios) son mejores cuando son altos.',
+    en: "These four metrics measure key defensibility factors. Risk scores (Copycat, Platform) are better when low. Strength scores (Lock-in, Pricing Power) are better when high.",
+    es: "Estas cuatro metricas miden factores clave de defensibilidad. Los puntajes de riesgo (Copia, Plataforma) son mejores cuando son bajos. Los puntajes de fuerza (Lock-in, Poder de Precios) son mejores cuando son altos.",
   },
   weakSignals: {
-    en: 'These are areas where your idea shows vulnerability. Each weak signal compounds the others - multiple weak signals together create much higher overall risk.',
-    es: 'Estas son areas donde tu idea muestra vulnerabilidad. Cada senal debil se combina con las otras - multiples senales debiles juntas crean un riesgo general mucho mayor.',
+    en: "These are areas where your idea shows vulnerability. Each weak signal compounds the others - multiple weak signals together create much higher overall risk.",
+    es: "Estas son areas donde tu idea muestra vulnerabilidad. Cada senal debil se combina con las otras - multiples senales debiles juntas crean un riesgo general mucho mayor.",
   },
   pivotSuggestions: {
-    en: 'Based on your weak signals, these are strategic pivots that could strengthen your defensibility before you invest more time and resources.',
-    es: 'Basado en tus senales debiles, estos son pivotes estrategicos que podrian fortalecer tu defensibilidad antes de que inviertas mas tiempo y recursos.',
+    en: "Based on your weak signals, these are strategic pivots that could strengthen your defensibility before you invest more time and resources.",
+    es: "Basado en tus senales debiles, estos son pivotes estrategicos que podrian fortalecer tu defensibilidad antes de que inviertas mas tiempo y recursos.",
   },
   biggestRisk: {
-    en: 'This is the risk you identified as most likely to cause failure. Keep this top of mind - it should inform your early validation priorities.',
-    es: 'Este es el riesgo que identificaste como mas probable de causar fracaso. Tenlo presente - deberia informar tus prioridades de validacion temprana.',
+    en: "This is the risk you identified as most likely to cause failure. Keep this top of mind - it should inform your early validation priorities.",
+    es: "Este es el riesgo que identificaste como mas probable de causar fracaso. Tenlo presente - deberia informar tus prioridades de validacion temprana.",
   },
 };
 
@@ -148,6 +152,57 @@ export function Results() {
 
   if (!result) return null;
 
+  // The full analysis is the deliverable. When it's present, render it and
+  // nothing else — the legacy blocks below are locally-computed template text
+  // that only ever existed as a stand-in.
+  if (result.analysis && !isAnalyzing) {
+    return (
+      <div className="mx-auto min-h-[70vh] max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <AnalysisReport
+          analysis={result.analysis}
+          language={language === "es" ? "es" : "en"}
+        />
+        <div className="mx-auto mt-10 max-w-3xl border-t border-neutral-200 pt-6 dark:border-neutral-800">
+          <button
+            onClick={resetTest}
+            className="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 transition-colors hover:bg-neutral-50 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-900"
+          >
+            {language === "es" ? "Evaluar otra idea" : "Test another idea"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // The request failed. Say so — do not present placeholder text as a verdict.
+  if (result.analysisError && !isAnalyzing) {
+    return (
+      <div className="mx-auto flex min-h-[70vh] max-w-2xl items-center px-4 py-12">
+        <div className="w-full rounded-xl border border-red-200 bg-red-50 p-8 dark:border-red-900/50 dark:bg-red-950/20">
+          <h1 className="text-xl font-semibold text-red-900 dark:text-red-200">
+            {language === "es"
+              ? "No se pudo completar el análisis"
+              : "The analysis could not be completed"}
+          </h1>
+          <p className="mt-3 text-sm leading-relaxed text-red-800 dark:text-red-300">
+            {result.analysisError}
+          </p>
+          <p className="mt-4 text-sm text-red-700 dark:text-red-400">
+            {language === "es"
+              ? "Tus respuestas no se perdieron. Intenta enviarlas de nuevo."
+              : "Your answers were not lost. Try submitting them again."}
+          </p>
+          <button
+            onClick={resetTest}
+            className="mt-6 rounded-lg border border-red-300 px-4 py-2 text-sm font-medium text-red-800 transition-colors hover:bg-red-100 dark:border-red-800 dark:text-red-300 dark:hover:bg-red-950/40"
+          >
+            {language === "es" ? "Empezar de nuevo" : "Start over"}
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const aiAnalysis = result.aiAnalysis;
 
   const verdictT = t.results.verdicts[result.verdict];
@@ -155,26 +210,26 @@ export function Results() {
   const verdictLabel = verdictLabels[result.verdict][language];
 
   // Get weak signals (sorted by severity)
-  const weakSignals = result.weakSignals.filter(s => s.isWeak);
+  const weakSignals = result.weakSignals.filter((s) => s.isWeak);
 
   // Helper to get risk level label
   const getRiskLevel = (score: number, isInverted: boolean) => {
     if (isInverted) {
       // For lock-in and pricing power (higher is better)
-      if (score >= 7) return language === 'en' ? 'Strong' : 'Fuerte';
-      if (score >= 4) return language === 'en' ? 'Moderate' : 'Moderado';
-      return language === 'en' ? 'Weak' : 'Debil';
+      if (score >= 7) return language === "en" ? "Strong" : "Fuerte";
+      if (score >= 4) return language === "en" ? "Moderate" : "Moderado";
+      return language === "en" ? "Weak" : "Debil";
     } else {
       // For copycat and platform risk (lower is better)
-      if (score <= 3) return language === 'en' ? 'Low Risk' : 'Bajo Riesgo';
-      if (score <= 6) return language === 'en' ? 'Moderate' : 'Moderado';
-      return language === 'en' ? 'High Risk' : 'Alto Riesgo';
+      if (score <= 3) return language === "en" ? "Low Risk" : "Bajo Riesgo";
+      if (score <= 6) return language === "en" ? "Moderate" : "Moderado";
+      return language === "en" ? "High Risk" : "Alto Riesgo";
     }
   };
 
   const copyResults = async () => {
-    const ideaDescription = answers.ideaDefinition || '';
-    const biggestRisk = answers.biggestUnresolvedRisk || '';
+    const ideaDescription = answers.ideaDefinition || "";
+    const biggestRisk = answers.biggestUnresolvedRisk || "";
 
     const text = `
 ${verdictLabel}
@@ -203,7 +258,7 @@ Generated by AI Idea Validator
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
@@ -227,7 +282,9 @@ Generated by AI Idea Validator
               <p className="mt-4 text-lg font-semibold text-neutral-700 dark:text-neutral-300">
                 {verdictLabel}
               </p>
-              <h1 className={`mt-2 text-4xl font-bold tracking-tight ${colors.text} sm:text-5xl`}>
+              <h1
+                className={`mt-2 text-4xl font-bold tracking-tight ${colors.text} sm:text-5xl`}
+              >
                 {verdictT.title}
               </h1>
               <p className="mx-auto mt-4 max-w-md text-neutral-600 dark:text-neutral-400">
@@ -306,7 +363,8 @@ Generated by AI Idea Validator
                           {c.field}
                         </span>
                         <span className="text-sm text-neutral-500">
-                          ({language === 'en' ? 'Your score' : 'Tu puntuacion'}: {c.userScore}/10)
+                          ({language === "en" ? "Your score" : "Tu puntuacion"}:{" "}
+                          {c.userScore}/10)
                         </span>
                       </div>
                       <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
@@ -352,31 +410,46 @@ Generated by AI Idea Validator
                     <span className="text-neutral-600 dark:text-neutral-400">
                       {t.results.scores.copycatRisk}
                     </span>
-                    <InfoTooltip content={signalExplanations.copycatRisk[language]} />
+                    <InfoTooltip
+                      content={signalExplanations.copycatRisk[language]}
+                    />
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-neutral-500">
                       {t.results.scores.yourScore}: {result.scores.copycatRisk}
                     </span>
-                    {aiAnalysis && aiAnalysis.adjustedScores.copycatRisk !== result.scores.copycatRisk && (
-                      <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
-                        {t.results.scores.aiScore}: {aiAnalysis.adjustedScores.copycatRisk}
-                      </span>
-                    )}
-                    <span className={`text-xs font-medium ${(aiAnalysis?.adjustedScores.copycatRisk ?? result.scores.copycatRisk) <= 3 ? 'text-green-600 dark:text-green-400' : (aiAnalysis?.adjustedScores.copycatRisk ?? result.scores.copycatRisk) <= 6 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
-                      {getRiskLevel(aiAnalysis?.adjustedScores.copycatRisk ?? result.scores.copycatRisk, false)}
+                    {aiAnalysis &&
+                      aiAnalysis.adjustedScores.copycatRisk !==
+                        result.scores.copycatRisk && (
+                        <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
+                          {t.results.scores.aiScore}:{" "}
+                          {aiAnalysis.adjustedScores.copycatRisk}
+                        </span>
+                      )}
+                    <span
+                      className={`text-xs font-medium ${(aiAnalysis?.adjustedScores.copycatRisk ?? result.scores.copycatRisk) <= 3 ? "text-green-600 dark:text-green-400" : (aiAnalysis?.adjustedScores.copycatRisk ?? result.scores.copycatRisk) <= 6 ? "text-yellow-600 dark:text-yellow-400" : "text-red-600 dark:text-red-400"}`}
+                    >
+                      {getRiskLevel(
+                        aiAnalysis?.adjustedScores.copycatRisk ??
+                          result.scores.copycatRisk,
+                        false,
+                      )}
                     </span>
                   </div>
                 </div>
                 <div className="relative h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                  {aiAnalysis && aiAnalysis.adjustedScores.copycatRisk !== result.scores.copycatRisk && (
-                    <div
-                      className="absolute h-full rounded-full bg-purple-300 dark:bg-purple-700"
-                      style={{ width: `${aiAnalysis.adjustedScores.copycatRisk * 10}%` }}
-                    />
-                  )}
+                  {aiAnalysis &&
+                    aiAnalysis.adjustedScores.copycatRisk !==
+                      result.scores.copycatRisk && (
+                      <div
+                        className="absolute h-full rounded-full bg-purple-300 dark:bg-purple-700"
+                        style={{
+                          width: `${aiAnalysis.adjustedScores.copycatRisk * 10}%`,
+                        }}
+                      />
+                    )}
                   <div
-                    className={`relative h-full rounded-full ${result.scores.copycatRisk >= 7 ? 'bg-red-500' : result.scores.copycatRisk >= 4 ? 'bg-yellow-500' : 'bg-green-500'} ${aiAnalysis ? 'opacity-70' : ''}`}
+                    className={`relative h-full rounded-full ${result.scores.copycatRisk >= 7 ? "bg-red-500" : result.scores.copycatRisk >= 4 ? "bg-yellow-500" : "bg-green-500"} ${aiAnalysis ? "opacity-70" : ""}`}
                     style={{ width: `${result.scores.copycatRisk * 10}%` }}
                   />
                 </div>
@@ -388,31 +461,46 @@ Generated by AI Idea Validator
                     <span className="text-neutral-600 dark:text-neutral-400">
                       {t.results.scores.platformRisk}
                     </span>
-                    <InfoTooltip content={signalExplanations.platformRisk[language]} />
+                    <InfoTooltip
+                      content={signalExplanations.platformRisk[language]}
+                    />
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-neutral-500">
                       {t.results.scores.yourScore}: {result.scores.platformRisk}
                     </span>
-                    {aiAnalysis && aiAnalysis.adjustedScores.platformRisk !== result.scores.platformRisk && (
-                      <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
-                        {t.results.scores.aiScore}: {aiAnalysis.adjustedScores.platformRisk}
-                      </span>
-                    )}
-                    <span className={`text-xs font-medium ${(aiAnalysis?.adjustedScores.platformRisk ?? result.scores.platformRisk) <= 3 ? 'text-green-600 dark:text-green-400' : (aiAnalysis?.adjustedScores.platformRisk ?? result.scores.platformRisk) <= 6 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
-                      {getRiskLevel(aiAnalysis?.adjustedScores.platformRisk ?? result.scores.platformRisk, false)}
+                    {aiAnalysis &&
+                      aiAnalysis.adjustedScores.platformRisk !==
+                        result.scores.platformRisk && (
+                        <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
+                          {t.results.scores.aiScore}:{" "}
+                          {aiAnalysis.adjustedScores.platformRisk}
+                        </span>
+                      )}
+                    <span
+                      className={`text-xs font-medium ${(aiAnalysis?.adjustedScores.platformRisk ?? result.scores.platformRisk) <= 3 ? "text-green-600 dark:text-green-400" : (aiAnalysis?.adjustedScores.platformRisk ?? result.scores.platformRisk) <= 6 ? "text-yellow-600 dark:text-yellow-400" : "text-red-600 dark:text-red-400"}`}
+                    >
+                      {getRiskLevel(
+                        aiAnalysis?.adjustedScores.platformRisk ??
+                          result.scores.platformRisk,
+                        false,
+                      )}
                     </span>
                   </div>
                 </div>
                 <div className="relative h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                  {aiAnalysis && aiAnalysis.adjustedScores.platformRisk !== result.scores.platformRisk && (
-                    <div
-                      className="absolute h-full rounded-full bg-purple-300 dark:bg-purple-700"
-                      style={{ width: `${aiAnalysis.adjustedScores.platformRisk * 10}%` }}
-                    />
-                  )}
+                  {aiAnalysis &&
+                    aiAnalysis.adjustedScores.platformRisk !==
+                      result.scores.platformRisk && (
+                      <div
+                        className="absolute h-full rounded-full bg-purple-300 dark:bg-purple-700"
+                        style={{
+                          width: `${aiAnalysis.adjustedScores.platformRisk * 10}%`,
+                        }}
+                      />
+                    )}
                   <div
-                    className={`relative h-full rounded-full ${result.scores.platformRisk >= 7 ? 'bg-red-500' : result.scores.platformRisk >= 4 ? 'bg-yellow-500' : 'bg-green-500'} ${aiAnalysis ? 'opacity-70' : ''}`}
+                    className={`relative h-full rounded-full ${result.scores.platformRisk >= 7 ? "bg-red-500" : result.scores.platformRisk >= 4 ? "bg-yellow-500" : "bg-green-500"} ${aiAnalysis ? "opacity-70" : ""}`}
                     style={{ width: `${result.scores.platformRisk * 10}%` }}
                   />
                 </div>
@@ -424,31 +512,47 @@ Generated by AI Idea Validator
                     <span className="text-neutral-600 dark:text-neutral-400">
                       {t.results.scores.lockInStrength}
                     </span>
-                    <InfoTooltip content={signalExplanations.lockInStrength[language]} />
+                    <InfoTooltip
+                      content={signalExplanations.lockInStrength[language]}
+                    />
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-neutral-500">
-                      {t.results.scores.yourScore}: {result.scores.lockInStrength}
+                      {t.results.scores.yourScore}:{" "}
+                      {result.scores.lockInStrength}
                     </span>
-                    {aiAnalysis && aiAnalysis.adjustedScores.lockInStrength !== result.scores.lockInStrength && (
-                      <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
-                        {t.results.scores.aiScore}: {aiAnalysis.adjustedScores.lockInStrength}
-                      </span>
-                    )}
-                    <span className={`text-xs font-medium ${(aiAnalysis?.adjustedScores.lockInStrength ?? result.scores.lockInStrength) >= 7 ? 'text-green-600 dark:text-green-400' : (aiAnalysis?.adjustedScores.lockInStrength ?? result.scores.lockInStrength) >= 4 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
-                      {getRiskLevel(aiAnalysis?.adjustedScores.lockInStrength ?? result.scores.lockInStrength, true)}
+                    {aiAnalysis &&
+                      aiAnalysis.adjustedScores.lockInStrength !==
+                        result.scores.lockInStrength && (
+                        <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
+                          {t.results.scores.aiScore}:{" "}
+                          {aiAnalysis.adjustedScores.lockInStrength}
+                        </span>
+                      )}
+                    <span
+                      className={`text-xs font-medium ${(aiAnalysis?.adjustedScores.lockInStrength ?? result.scores.lockInStrength) >= 7 ? "text-green-600 dark:text-green-400" : (aiAnalysis?.adjustedScores.lockInStrength ?? result.scores.lockInStrength) >= 4 ? "text-yellow-600 dark:text-yellow-400" : "text-red-600 dark:text-red-400"}`}
+                    >
+                      {getRiskLevel(
+                        aiAnalysis?.adjustedScores.lockInStrength ??
+                          result.scores.lockInStrength,
+                        true,
+                      )}
                     </span>
                   </div>
                 </div>
                 <div className="relative h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                  {aiAnalysis && aiAnalysis.adjustedScores.lockInStrength !== result.scores.lockInStrength && (
-                    <div
-                      className="absolute h-full rounded-full bg-purple-300 dark:bg-purple-700"
-                      style={{ width: `${aiAnalysis.adjustedScores.lockInStrength * 10}%` }}
-                    />
-                  )}
+                  {aiAnalysis &&
+                    aiAnalysis.adjustedScores.lockInStrength !==
+                      result.scores.lockInStrength && (
+                      <div
+                        className="absolute h-full rounded-full bg-purple-300 dark:bg-purple-700"
+                        style={{
+                          width: `${aiAnalysis.adjustedScores.lockInStrength * 10}%`,
+                        }}
+                      />
+                    )}
                   <div
-                    className={`relative h-full rounded-full ${result.scores.lockInStrength <= 3 ? 'bg-red-500' : result.scores.lockInStrength <= 6 ? 'bg-yellow-500' : 'bg-green-500'} ${aiAnalysis ? 'opacity-70' : ''}`}
+                    className={`relative h-full rounded-full ${result.scores.lockInStrength <= 3 ? "bg-red-500" : result.scores.lockInStrength <= 6 ? "bg-yellow-500" : "bg-green-500"} ${aiAnalysis ? "opacity-70" : ""}`}
                     style={{ width: `${result.scores.lockInStrength * 10}%` }}
                   />
                 </div>
@@ -460,31 +564,46 @@ Generated by AI Idea Validator
                     <span className="text-neutral-600 dark:text-neutral-400">
                       {t.results.scores.pricingPower}
                     </span>
-                    <InfoTooltip content={signalExplanations.pricingPower[language]} />
+                    <InfoTooltip
+                      content={signalExplanations.pricingPower[language]}
+                    />
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-xs text-neutral-500">
                       {t.results.scores.yourScore}: {result.scores.pricingPower}
                     </span>
-                    {aiAnalysis && aiAnalysis.adjustedScores.pricingPower !== result.scores.pricingPower && (
-                      <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
-                        {t.results.scores.aiScore}: {aiAnalysis.adjustedScores.pricingPower}
-                      </span>
-                    )}
-                    <span className={`text-xs font-medium ${(aiAnalysis?.adjustedScores.pricingPower ?? result.scores.pricingPower) >= 7 ? 'text-green-600 dark:text-green-400' : (aiAnalysis?.adjustedScores.pricingPower ?? result.scores.pricingPower) >= 4 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
-                      {getRiskLevel(aiAnalysis?.adjustedScores.pricingPower ?? result.scores.pricingPower, true)}
+                    {aiAnalysis &&
+                      aiAnalysis.adjustedScores.pricingPower !==
+                        result.scores.pricingPower && (
+                        <span className="text-xs font-medium text-purple-600 dark:text-purple-400">
+                          {t.results.scores.aiScore}:{" "}
+                          {aiAnalysis.adjustedScores.pricingPower}
+                        </span>
+                      )}
+                    <span
+                      className={`text-xs font-medium ${(aiAnalysis?.adjustedScores.pricingPower ?? result.scores.pricingPower) >= 7 ? "text-green-600 dark:text-green-400" : (aiAnalysis?.adjustedScores.pricingPower ?? result.scores.pricingPower) >= 4 ? "text-yellow-600 dark:text-yellow-400" : "text-red-600 dark:text-red-400"}`}
+                    >
+                      {getRiskLevel(
+                        aiAnalysis?.adjustedScores.pricingPower ??
+                          result.scores.pricingPower,
+                        true,
+                      )}
                     </span>
                   </div>
                 </div>
                 <div className="relative h-2 w-full overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                  {aiAnalysis && aiAnalysis.adjustedScores.pricingPower !== result.scores.pricingPower && (
-                    <div
-                      className="absolute h-full rounded-full bg-purple-300 dark:bg-purple-700"
-                      style={{ width: `${aiAnalysis.adjustedScores.pricingPower * 10}%` }}
-                    />
-                  )}
+                  {aiAnalysis &&
+                    aiAnalysis.adjustedScores.pricingPower !==
+                      result.scores.pricingPower && (
+                      <div
+                        className="absolute h-full rounded-full bg-purple-300 dark:bg-purple-700"
+                        style={{
+                          width: `${aiAnalysis.adjustedScores.pricingPower * 10}%`,
+                        }}
+                      />
+                    )}
                   <div
-                    className={`relative h-full rounded-full ${result.scores.pricingPower <= 3 ? 'bg-red-500' : result.scores.pricingPower <= 6 ? 'bg-yellow-500' : 'bg-green-500'} ${aiAnalysis ? 'opacity-70' : ''}`}
+                    className={`relative h-full rounded-full ${result.scores.pricingPower <= 3 ? "bg-red-500" : result.scores.pricingPower <= 6 ? "bg-yellow-500" : "bg-green-500"} ${aiAnalysis ? "opacity-70" : ""}`}
                     style={{ width: `${result.scores.pricingPower * 10}%` }}
                   />
                 </div>
@@ -511,9 +630,11 @@ Generated by AI Idea Validator
                     <line x1="12" y1="9" x2="12" y2="13" />
                     <line x1="12" y1="17" x2="12.01" y2="17" />
                   </svg>
-                  {language === 'en' ? 'Weak Signals' : 'Senales Debiles'}
+                  {language === "en" ? "Weak Signals" : "Senales Debiles"}
                 </h2>
-                <InfoTooltip content={sectionExplanations.weakSignals[language]} />
+                <InfoTooltip
+                  content={sectionExplanations.weakSignals[language]}
+                />
               </div>
               <ul className="mt-4 space-y-3">
                 {weakSignals.map((signal) => (
@@ -529,7 +650,9 @@ Generated by AI Idea Validator
                       <span className="text-sm text-neutral-500">
                         ({signal.score}/{signal.maxScore})
                       </span>
-                      <InfoTooltip content={weakSignalReasons[signal.id]?.[language] || ''} />
+                      <InfoTooltip
+                        content={weakSignalReasons[signal.id]?.[language] || ""}
+                      />
                     </div>
                   </li>
                 ))}
@@ -555,7 +678,7 @@ Generated by AI Idea Validator
                   <path d="M12 16v-4" />
                   <path d="M12 8h.01" />
                 </svg>
-                {language === 'en' ? 'Why This Matters' : 'Por Que Importa'}
+                {language === "en" ? "Why This Matters" : "Por Que Importa"}
               </h2>
               <p className="mt-4 text-neutral-600 dark:text-neutral-400">
                 {result.compoundingStory}
@@ -581,13 +704,20 @@ Generated by AI Idea Validator
                     <path d="M12 20h9" />
                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                   </svg>
-                  {language === 'en' ? 'Pivot Suggestions' : 'Sugerencias de Pivote'}
+                  {language === "en"
+                    ? "Pivot Suggestions"
+                    : "Sugerencias de Pivote"}
                 </h2>
-                <InfoTooltip content={sectionExplanations.pivotSuggestions[language]} />
+                <InfoTooltip
+                  content={sectionExplanations.pivotSuggestions[language]}
+                />
               </div>
               <ul className="mt-4 space-y-4">
                 {result.pivotSuggestions.map((pivot, index) => (
-                  <li key={index} className="rounded-lg border-l-4 border-green-500 bg-green-50 p-4 dark:bg-green-950/20">
+                  <li
+                    key={index}
+                    className="rounded-lg border-l-4 border-green-500 bg-green-50 p-4 dark:bg-green-950/20"
+                  >
                     <span className="text-sm font-semibold text-green-700 dark:text-green-400">
                       {pivotTypeLabels[pivot.type]?.[language] || pivot.type}
                     </span>
@@ -621,7 +751,9 @@ Generated by AI Idea Validator
                   </svg>
                   {t.results.biggestRisk}
                 </h2>
-                <InfoTooltip content={sectionExplanations.biggestRisk[language]} />
+                <InfoTooltip
+                  content={sectionExplanations.biggestRisk[language]}
+                />
               </div>
               <p className="mt-4 text-neutral-600 dark:text-neutral-400">
                 {answers.biggestUnresolvedRisk as string}

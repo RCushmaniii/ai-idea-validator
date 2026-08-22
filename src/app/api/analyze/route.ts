@@ -1,285 +1,411 @@
-import { NextResponse } from 'next/server';
-import type { TestAnswers } from '@/contexts/KillTestContext';
+import { NextResponse } from "next/server";
+import Anthropic from "@anthropic-ai/sdk";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
+import type { TestAnswers } from "@/contexts/KillTestContext";
+import type { AnalysisResult, Language } from "@/lib/analysis-schema";
+import { RESEARCH_PROMPT, buildAnalysisPrompt } from "@/lib/analysis-prompt";
 
-export type Verdict = 'kill' | 'flip' | 'build' | 'bet';
-export type Language = 'en' | 'es';
+export const maxDuration = 300; // long analyses run for minutes
 
-export interface AnalysisResult {
-  verdict: Verdict;
-  confidence: number;
-  rationale: string;
-  contradictions: Array<{
-    field: string;
-    userScore: number;
-    issue: string;
-  }>;
-  adjustedScores: {
-    copycatRisk: number;
-    platformRisk: number;
-    lockInStrength: number;
-    pricingPower: number;
+const MODEL = "claude-opus-5";
+
+/**
+ * Rate limiting is mandatory here, not optional.
+ *
+ * This is a public endpoint that calls a premium model twice per request with a
+ * large token budget. Uncapped, a single scripted caller can run up a real bill
+ * in an hour. In-memory limiters are useless on serverless (they reset every
+ * deploy and aren't shared across instances), so this uses Upstash Redis over
+ * REST.
+ *
+ * If Upstash is not configured the route fails CLOSED with an operator-facing
+ * error. That is deliberate: an unavailable validator is recoverable, an
+ * unmetered one is not.
+ */
+const upstashConfigured = Boolean(
+  process.env.IDEA_VALIDATOR_UPSTASH_URL &&
+  process.env.IDEA_VALIDATOR_UPSTASH_TOKEN,
+);
+
+const redis = upstashConfigured
+  ? new Redis({
+      url: process.env.IDEA_VALIDATOR_UPSTASH_URL!,
+      token: process.env.IDEA_VALIDATOR_UPSTASH_TOKEN!,
+    })
+  : null;
+
+// Two windows: bursts and sustained abuse are different attacks.
+const perMinute = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(3, "1 m"),
+      prefix: "aiv:min",
+    })
+  : null;
+const perDay = redis
+  ? new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(25, "24 h"),
+      prefix: "aiv:day",
+    })
+  : null;
+
+/**
+ * Collapse a client address to the unit the limit should apply to.
+ *
+ * IPv4 whole; IPv6 truncated to its /64. This is what decides whether the
+ * Upstash limiter above can hold anyone to 3/min and 25/day.
+ *
+ * A full IPv6 /128 is close to useless as a key: hosts rotate temporary
+ * addresses under RFC 4941, every device on a LAN has its own, and a
+ * residential subscriber is handed an entire /64 — so a caller gets a fresh
+ * bucket almost every request. Measured on a sibling project: keying on the raw
+ * address let 1,500 requests through with zero refusals against a limiter that
+ * was otherwise correct. Here that would be billed Opus 5 calls.
+ */
+function normalizeIp(ip: string): string {
+  if (!ip) return "unknown";
+  if (!ip.includes(":")) return ip;
+  const hextets = ip.split(":");
+  // Guard against "::"-compressed forms that expand to fewer than 4 groups.
+  if (hextets.length < 4 || ip.includes("::")) return ip;
+  return `${hextets.slice(0, 4).join(":")}::/64`;
+}
+
+function clientId(request: Request): string {
+  // x-forwarded-for is a comma-separated chain; the first entry is the original
+  // client and the rest are proxies.
+  const fwd = request.headers.get("x-forwarded-for");
+  const raw = fwd
+    ? fwd.split(",")[0]!.trim()
+    : (request.headers.get("x-nf-client-connection-ip") ?? "");
+  return normalizeIp(raw);
+}
+
+/**
+ * Split the founder's answers into prose and self-assessment scores.
+ *
+ * Walks the object rather than naming fields, so adding a question upstream
+ * can't silently drop it from the analysis — the previous implementation
+ * hardcoded a field list, and any question added later was invisible to the model.
+ */
+function partitionAnswers(answers: TestAnswers): {
+  responses: string;
+  selfScores: string;
+} {
+  const prose: string[] = [];
+  const scores: string[] = [];
+
+  for (const [key, raw] of Object.entries(answers as Record<string, unknown>)) {
+    if (raw === null || raw === undefined || raw === "") continue;
+    const label = key
+      .replace(/([A-Z])/g, " $1")
+      .replace(/^./, (c) => c.toUpperCase());
+
+    if (key.endsWith("Score") || typeof raw === "number") {
+      scores.push(`- ${label.replace(/ Score$/, "")}: ${String(raw)}/10`);
+    } else if (typeof raw === "string") {
+      prose.push(`### ${label}\n${raw.trim()}`);
+    } else if (Array.isArray(raw) && raw.length > 0) {
+      prose.push(`### ${label}\n${raw.map(String).join("\n")}`);
+    }
+  }
+
+  return {
+    responses: prose.join("\n\n") || "(no written responses provided)",
+    selfScores: scores.join("\n") || "(no self-assessment scores provided)",
   };
 }
 
-const ANALYSIS_PROMPT_EN = `You are a brutally honest startup idea evaluator. Your job is to cut through founder optimism and identify real weaknesses.
-
-Analyze this founder's responses and:
-
-1. Generate a verdict:
-   - KILL: Fundamentally weak. Too many structural problems. Move on.
-   - FLIP: Has potential but needs a significant pivot. Rethink the positioning or model.
-   - BUILD: Defensible with discipline. Execute carefully and focus on moats.
-   - BET: Risky but asymmetric upside. The potential reward justifies the gamble.
-
-2. Identify contradictions between their written answers and self-assessment scores. Look for:
-   - Optimistic scores that don't match concerning written responses
-   - Claims of defensibility without evidence
-   - Underestimating platform or copycat risk
-   - Overestimating lock-in or pricing power
-
-3. Provide adjusted risk scores based on what they actually described (not what they scored themselves).
-
-## Founder Responses:
-{RESPONSES}
-
-## Self-Assessment Scores:
-- Copycat Risk: {COPYCAT_RISK}/10 (higher = easier to copy)
-- Platform Risk: {PLATFORM_RISK}/10 (higher = more dependent)
-- Lock-in Strength: {LOCKIN_STRENGTH}/10 (higher = stickier)
-- Pricing Power: {PRICING_POWER}/10 (higher = can charge more)
-
-Be direct and honest. If this idea has fatal flaws, say so clearly. Founders need truth, not encouragement.
-
-Respond in JSON only (no markdown, no explanation outside JSON):
-{
-  "verdict": "kill" | "flip" | "build" | "bet",
-  "confidence": 0-100,
-  "rationale": "2-3 sentences explaining your verdict. Be specific about the key issues or strengths.",
-  "contradictions": [
-    {"field": "fieldName", "userScore": 8, "issue": "Specific contradiction explanation..."}
+/** JSON Schema for the structured response. Every object needs additionalProperties: false. */
+const OUTPUT_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "verdict",
+    "confidence",
+    "uncertainty",
+    "headline",
+    "category",
+    "buyer",
+    "priceBand",
+    "theIdea",
+    "theSolution",
+    "valueProposition",
+    "whyThisCouldWork",
+    "biggestRisk",
+    "secondRisk",
+    "validationPlan",
+    "positioning",
+    "finalAssessment",
+    "riskScores",
+    "contradictions",
+    "comparables",
   ],
-  "adjustedScores": {
-    "copycatRisk": 1-10,
-    "platformRisk": 1-10,
-    "lockInStrength": 1-10,
-    "pricingPower": 1-10
-  }
-}`;
-
-const ANALYSIS_PROMPT_ES = `Eres un evaluador de ideas de startup brutalmente honesto. Tu trabajo es cortar el optimismo del fundador e identificar debilidades reales.
-
-Analiza las respuestas de este fundador y:
-
-1. Genera un veredicto:
-   - KILL: Fundamentalmente debil. Demasiados problemas estructurales. Sigue adelante.
-   - FLIP: Tiene potencial pero necesita un pivote significativo. Repiensa el posicionamiento o modelo.
-   - BUILD: Defendible con disciplina. Ejecuta cuidadosamente y enfocate en los fosos.
-   - BET: Arriesgado pero con potencial asimetrico. La recompensa potencial justifica la apuesta.
-
-2. Identifica contradicciones entre sus respuestas escritas y sus puntuaciones de autoevaluacion. Busca:
-   - Puntuaciones optimistas que no coinciden con respuestas escritas preocupantes
-   - Afirmaciones de defendibilidad sin evidencia
-   - Subestimacion del riesgo de plataforma o de copia
-   - Sobreestimacion del lock-in o poder de precios
-
-3. Proporciona puntuaciones de riesgo ajustadas basadas en lo que realmente describieron (no lo que puntuaron).
-
-## Respuestas del Fundador:
-{RESPONSES}
-
-## Puntuaciones de Autoevaluacion:
-- Riesgo de Copia: {COPYCAT_RISK}/10 (mayor = mas facil de copiar)
-- Riesgo de Plataforma: {PLATFORM_RISK}/10 (mayor = mas dependiente)
-- Fuerza de Lock-in: {LOCKIN_STRENGTH}/10 (mayor = mas pegajoso)
-- Poder de Precios: {PRICING_POWER}/10 (mayor = puede cobrar mas)
-
-Se directo y honesto. Si esta idea tiene fallas fatales, dilo claramente. Los fundadores necesitan verdad, no aliento.
-
-Responde SOLO en JSON (sin markdown, sin explicacion fuera del JSON). El rationale y las contradicciones DEBEN estar en espanol:
-{
-  "verdict": "kill" | "flip" | "build" | "bet",
-  "confidence": 0-100,
-  "rationale": "2-3 oraciones explicando tu veredicto en espanol. Se especifico sobre los problemas o fortalezas clave.",
-  "contradictions": [
-    {"field": "fieldName", "userScore": 8, "issue": "Explicacion especifica de la contradiccion en espanol..."}
-  ],
-  "adjustedScores": {
-    "copycatRisk": 1-10,
-    "platformRisk": 1-10,
-    "lockInStrength": 1-10,
-    "pricingPower": 1-10
-  }
-}`;
-
-function buildPrompt(answers: TestAnswers, language: Language): string {
-  const responses = {
-    ideaDefinition: answers.ideaDefinition || '',
-    targetCustomer: answers.targetCustomer || '',
-    coreWorkflow: answers.coreWorkflow || '',
-    monetization: answers.monetization || '',
-    platformDependencies: answers.platformDependencies || '',
-    disappearanceTest: answers.disappearanceTest || '',
-    inevitabilityTest: answers.inevitabilityTest || '',
-    copycatVelocity: answers.copycatVelocity || '',
-    aiCommoditization: answers.aiCommoditization || '',
-    platformHostageRisk: answers.platformHostageRisk || '',
-    dataMoatReality: answers.dataMoatReality || '',
-    dataCompounding: answers.dataCompounding || '',
-    workflowLockIn: answers.workflowLockIn || '',
-    pricingPower: answers.pricingPower || '',
-    budgetOwner: answers.budgetOwner || '',
-    soloFounderRisk: answers.soloFounderRisk || '',
-    scalingStress: answers.scalingStress || '',
-    likelyFailureMode: answers.likelyFailureMode || '',
-    biggestUnresolvedRisk: answers.biggestUnresolvedRisk || '',
-  };
-
-  const copycatRisk = Number(answers.copycatRiskScore) || 5;
-  const platformRisk = Number(answers.platformRiskScore) || 5;
-  const lockInStrength = Number(answers.lockInStrengthScore) || 5;
-  const pricingPower = Number(answers.pricingPowerScore) || 5;
-
-  const promptTemplate = language === 'es' ? ANALYSIS_PROMPT_ES : ANALYSIS_PROMPT_EN;
-
-  return promptTemplate
-    .replace('{RESPONSES}', JSON.stringify(responses, null, 2))
-    .replace('{COPYCAT_RISK}', String(copycatRisk))
-    .replace('{PLATFORM_RISK}', String(platformRisk))
-    .replace('{LOCKIN_STRENGTH}', String(lockInStrength))
-    .replace('{PRICING_POWER}', String(pricingPower));
-}
+  properties: {
+    verdict: { type: "string", enum: ["kill", "flip", "build", "bet"] },
+    confidence: { type: "integer" },
+    uncertainty: { type: "string" },
+    headline: { type: "string" },
+    category: { type: "string" },
+    buyer: { type: "string" },
+    priceBand: { type: "string" },
+    theIdea: { type: "string" },
+    theSolution: { type: "string" },
+    valueProposition: { type: "string" },
+    whyThisCouldWork: { type: "string" },
+    biggestRisk: { type: "string" },
+    secondRisk: { type: "string" },
+    validationPlan: { type: "string" },
+    positioning: { type: "string" },
+    finalAssessment: { type: "string" },
+    riskScores: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: [
+          "key",
+          "label",
+          "selfScore",
+          "adjustedScore",
+          "higherIs",
+          "reasoning",
+        ],
+        properties: {
+          key: {
+            type: "string",
+            enum: [
+              "copycat_risk",
+              "platform_risk",
+              "lock_in_strength",
+              "pricing_power",
+              "execution_risk",
+              "regulatory_risk",
+            ],
+          },
+          label: { type: "string" },
+          selfScore: { type: ["integer", "null"] },
+          adjustedScore: { type: "integer" },
+          higherIs: { type: "string", enum: ["worse", "better"] },
+          reasoning: { type: "string" },
+        },
+      },
+    },
+    contradictions: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: [
+          "key",
+          "label",
+          "selfScore",
+          "adjustedScore",
+          "quote",
+          "issue",
+        ],
+        properties: {
+          key: { type: "string" },
+          label: { type: "string" },
+          selfScore: { type: "integer" },
+          adjustedScore: { type: "integer" },
+          quote: { type: "string" },
+          issue: { type: "string" },
+        },
+      },
+    },
+    comparables: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["name", "what", "difference", "url"],
+        properties: {
+          name: { type: "string" },
+          what: { type: "string" },
+          difference: { type: "string" },
+          url: { type: ["string", "null"] },
+        },
+      },
+    },
+  },
+};
 
 export async function POST(request: Request) {
-  try {
-    const { answers, language = 'en' } = await request.json() as { answers: TestAnswers; language?: Language };
-
-    const apiKey = process.env.OPENAI_API_KEY;
-    if (!apiKey) {
-      // Return offline analysis if no API key
-      return NextResponse.json(analyzeOffline(answers, language));
-    }
-
-    const prompt = buildPrompt(answers, language);
-
-    const systemMessage = language === 'es'
-      ? 'Eres un evaluador de ideas de startup brutalmente honesto. Siempre responde con JSON valido solamente. Todas las respuestas de texto deben estar en espanol.'
-      : 'You are a brutally honest startup idea evaluator. Always respond with valid JSON only.';
-
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
+  // ── Rate limit ────────────────────────────────────────────────────────────
+  if (!perMinute || !perDay) {
+    console.error(
+      "[analyze] Upstash is not configured. Set IDEA_VALIDATOR_UPSTASH_URL and " +
+        "IDEA_VALIDATOR_UPSTASH_TOKEN. Refusing to run an uncapped premium-model endpoint.",
+    );
+    return NextResponse.json(
+      {
+        error:
+          "Analysis is temporarily unavailable. The operator has been notified.",
       },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        max_tokens: 1024,
-        response_format: { type: 'json_object' },
+      { status: 503 },
+    );
+  }
+
+  const id = clientId(request);
+  const [minute, day] = await Promise.all([
+    perMinute.limit(id),
+    perDay.limit(id),
+  ]);
+  if (!minute.success || !day.success) {
+    return NextResponse.json(
+      {
+        error:
+          "Rate limit reached. This analysis is expensive to run — please try again later.",
+      },
+      {
+        status: 429,
+        headers: { "Retry-After": minute.success ? "3600" : "60" },
+      },
+    );
+  }
+
+  const apiKey = process.env.IDEA_VALIDATOR_ANTHROPIC_KEY;
+  if (!apiKey) {
+    // Fail loudly. The previous version silently served canned template text
+    // here, which is a large part of why the tool felt shallow — a missing key
+    // was indistinguishable from a real analysis.
+    console.error("[analyze] IDEA_VALIDATOR_ANTHROPIC_KEY is not set.");
+    return NextResponse.json(
+      {
+        error:
+          "Analysis is temporarily unavailable. The operator has been notified.",
+      },
+      { status: 503 },
+    );
+  }
+
+  try {
+    const { answers, language = "en" } = (await request.json()) as {
+      answers: TestAnswers;
+      language?: Language;
+    };
+
+    const client = new Anthropic({ apiKey });
+    const { responses, selfScores } = partitionAnswers(answers);
+
+    // ── Stage 1: competitive research ───────────────────────────────────────
+    // A separate call so web search never has to coexist with a constrained
+    // output format. Prose in, prose out.
+    let research = "(no research available)";
+    let researchPerformed = false;
+    try {
+      const researched = await client.messages.create({
+        model: MODEL,
+        max_tokens: 4000,
+        output_config: { effort: "medium" },
+        tools: [
+          { type: "web_search_20260209", name: "web_search", max_uses: 6 },
+        ],
         messages: [
           {
-            role: 'system',
-            content: systemMessage,
-          },
-          {
-            role: 'user',
-            content: prompt,
+            role: "user",
+            content: RESEARCH_PROMPT.replace(
+              "{IDEA}",
+              responses.slice(0, 6000),
+            ),
           },
         ],
-      }),
+      });
+      const text = researched.content
+        .filter((b) => b.type === "text")
+        .map((b) => (b.type === "text" ? b.text : ""))
+        .join("\n")
+        .trim();
+      if (text) {
+        research = text;
+        researchPerformed = true;
+      }
+    } catch (e) {
+      // Research is an enhancement, not a precondition — degrade to an
+      // unresearched analysis rather than failing the request. The response
+      // records researchPerformed:false so the UI never implies otherwise.
+      console.error(
+        "[analyze] research stage failed, continuing without it:",
+        e,
+      );
+    }
+
+    // ── Stage 2: the analysis ───────────────────────────────────────────────
+    // Streamed because a model writing a multi-section document at this length
+    // would otherwise risk the SDK's HTTP timeout.
+    const stream = client.messages.stream({
+      model: MODEL,
+      max_tokens: 32000,
+      output_config: {
+        effort: "high",
+        format: { type: "json_schema", schema: OUTPUT_SCHEMA },
+      },
+      messages: [
+        {
+          role: "user",
+          content: buildAnalysisPrompt(
+            responses,
+            selfScores,
+            research,
+            language,
+          ),
+        },
+      ],
     });
 
-    if (!response.ok) {
-      const error = await response.text();
-      console.error('OpenAI API error:', error);
-      return NextResponse.json(analyzeOffline(answers));
+    const message = await stream.finalMessage();
+
+    if (message.stop_reason === "refusal") {
+      console.error("[analyze] model declined:", message.stop_details);
+      return NextResponse.json(
+        {
+          error:
+            "This idea could not be analyzed automatically. Please rephrase and try again.",
+        },
+        { status: 422 },
+      );
     }
 
-    const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
-
-    if (!content) {
-      return NextResponse.json(analyzeOffline(answers));
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") {
+      throw new Error(
+        `no text block in response (stop_reason: ${message.stop_reason})`,
+      );
     }
 
-    const result = JSON.parse(content) as AnalysisResult;
+    const parsed = JSON.parse(textBlock.text) as AnalysisResult;
 
-    // Validate and sanitize
-    if (!['kill', 'flip', 'build', 'bet'].includes(result.verdict)) {
-      result.verdict = 'bet';
-    }
-
-    result.confidence = Math.max(0, Math.min(100, result.confidence || 50));
-    result.contradictions = result.contradictions || [];
-    result.adjustedScores = {
-      copycatRisk: Math.max(1, Math.min(10, result.adjustedScores?.copycatRisk || 5)),
-      platformRisk: Math.max(1, Math.min(10, result.adjustedScores?.platformRisk || 5)),
-      lockInStrength: Math.max(1, Math.min(10, result.adjustedScores?.lockInStrength || 5)),
-      pricingPower: Math.max(1, Math.min(10, result.adjustedScores?.pricingPower || 5)),
+    const result: AnalysisResult = {
+      ...parsed,
+      confidence: Math.max(
+        0,
+        Math.min(100, Math.round(parsed.confidence ?? 50)),
+      ),
+      riskScores: parsed.riskScores ?? [],
+      contradictions: parsed.contradictions ?? [],
+      comparables: parsed.comparables ?? [],
+      meta: {
+        model: message.model,
+        researchPerformed,
+        language,
+        generatedAt: new Date().toISOString(),
+      },
     };
 
     return NextResponse.json(result);
   } catch (error) {
-    console.error('Analysis error:', error);
+    // No canned fallback. A failure that looks like a successful shallow
+    // analysis is worse than an honest error.
+    console.error("[analyze] failed:", error);
     return NextResponse.json(
-      { error: 'Analysis failed' },
-      { status: 500 }
+      {
+        error:
+          "Analysis failed. Please try again — if it persists, the operator has been notified.",
+      },
+      { status: 500 },
     );
   }
-}
-
-// Fallback analysis when API is unavailable
-function analyzeOffline(answers: TestAnswers, language: Language = 'en'): AnalysisResult {
-  const copycatRisk = Number(answers.copycatRiskScore) || 5;
-  const platformRisk = Number(answers.platformRiskScore) || 5;
-  const lockInStrength = Number(answers.lockInStrengthScore) || 5;
-  const pricingPower = Number(answers.pricingPowerScore) || 5;
-
-  const riskScore = (copycatRisk + platformRisk) / 2;
-  const strengthScore = (lockInStrength + pricingPower) / 2;
-  const netScore = strengthScore - riskScore;
-
-  let verdict: Verdict;
-  let rationale: string;
-
-  const rationales = {
-    en: {
-      kill: 'High risks combined with weak defensibility signals. The combination of copycat vulnerability and platform dependency makes this structurally fragile.',
-      flip: 'The risk-to-strength ratio suggests a pivot is needed. Consider repositioning toward stronger lock-in or reduced platform dependency.',
-      bet: 'Moderate defensibility with manageable risks. Success depends heavily on execution speed and building moats before competitors catch up.',
-      build: 'Strong fundamentals with good lock-in potential. Focus on deepening customer relationships and expanding the moat while you have momentum.',
-    },
-    es: {
-      kill: 'Altos riesgos combinados con senales de defendibilidad debiles. La combinacion de vulnerabilidad a copias y dependencia de plataforma hace esto estructuralmente fragil.',
-      flip: 'La relacion riesgo-fortaleza sugiere que se necesita un pivote. Considera reposicionarte hacia un lock-in mas fuerte o menor dependencia de plataforma.',
-      bet: 'Defendibilidad moderada con riesgos manejables. El exito depende en gran medida de la velocidad de ejecucion y construir fosos antes de que los competidores te alcancen.',
-      build: 'Fundamentos solidos con buen potencial de lock-in. Enfocate en profundizar las relaciones con clientes y expandir el foso mientras tienes impulso.',
-    },
-  };
-
-  if (netScore <= -3) {
-    verdict = 'kill';
-    rationale = rationales[language].kill;
-  } else if (netScore <= 0) {
-    verdict = 'flip';
-    rationale = rationales[language].flip;
-  } else if (netScore <= 3) {
-    verdict = 'bet';
-    rationale = rationales[language].bet;
-  } else {
-    verdict = 'build';
-    rationale = rationales[language].build;
-  }
-
-  return {
-    verdict,
-    confidence: 60,
-    rationale,
-    contradictions: [],
-    adjustedScores: {
-      copycatRisk,
-      platformRisk,
-      lockInStrength,
-      pricingPower,
-    },
-  };
 }
