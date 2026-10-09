@@ -3,7 +3,7 @@
 portfolio_enabled: true
 portfolio_priority: 13
 portfolio_featured: false
-portfolio_last_reviewed: "2026-03-16"
+portfolio_last_reviewed: "2026-09-13"
 
 # === IDENTITY ===
 title: "AI Idea Validator"
